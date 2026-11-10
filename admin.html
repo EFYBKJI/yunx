@@ -652,10 +652,7 @@ header{
     try{a=localStorage.getItem(LS_API);t=localStorage.getItem(LS_TOK)}catch(e){}
     if(a&&t){ $("api").value=a; $("token").value=t; login(); }
     else{
-      var h=location.hostname;
-      $("api").value=(h&&h!=="127.0.0.1"&&h!=="localhost"&&h!=="")
-        ? location.protocol+"//"+h+(location.port?":"+location.port:"")
-        : "http://127.0.0.1:8090";
+      $("api").value="https://yunx-license.yunxq.workers.dev";
     }
     setN(5);
   })();
