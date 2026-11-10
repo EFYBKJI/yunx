@@ -313,6 +313,12 @@ header{
     </div>
     <div class="filters" id="filters"></div>
     <div class="rows" id="rows"></div>
+
+    <div class="panel" style="margin-top:14px">
+      <h2>📷 用户反馈 <em id="fb-count">0 条</em></h2>
+      <div id="fb-list" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"></div>
+      <div id="fb-empty" style="color:var(--tx3);font-size:12.5px;padding:8px 2px">还没有用户上传截图</div>
+    </div>
   </div>
 </div>
 
@@ -634,11 +640,45 @@ header{
       $("s-bound").textContent=a.bound||0;
       $("s-unused").textContent=a.unused||0;
       $("s-bad").textContent=(a.disabled||0)+expired;
+      loadFeedback();
       Object.keys(s).forEach(function(id){
         var el=$("cnt-"+id); if(el) el.textContent=(s[id].total||0)+" 张卡密";
       });
     });
   }
+
+  function loadFeedback(){
+    call("/admin/feedback").then(function(res){
+      var box = $("fb-list"), emp = $("fb-empty");
+      if(!res || !res.ok || !res.data || !res.data.list || !res.data.list.length){
+        box.innerHTML = ""; if(emp) emp.style.display = "block"; return;
+      }
+      var list = res.data.list;
+      $("fb-count").textContent = list.length + " 条";
+      if(emp) emp.style.display = "none";
+      box.innerHTML = list.map(function(f){
+        return '<div data-fb="' + f.id + '" style="aspect-ratio:1;border-radius:10px;border:1px solid var(--line);'
+          + 'background:#f1f5f9;display:grid;place-items:center;cursor:pointer;overflow:hidden;position:relative">'
+          + '<span style="font-size:11px;color:var(--tx2);text-align:center;padding:4px">' + esc(f.model || f.key || '') + '</span>'
+          + '</div>';
+      }).join("");
+    });
+  }
+  document.addEventListener("click", function(ev){
+    var el = ev.target.closest("[data-fb]");
+    if(!el) return;
+    var id = el.getAttribute("data-fb");
+    call("/admin/feedback?id=" + id).then(function(r){
+      if(!r || !r.ok) return;
+      var d = r.data;
+      var win = window.open("", "_blank");
+      if(win){
+        win.document.write('<title>用户反馈</title><body style="margin:0;background:#111;text-align:center">'
+          + '<img src="' + d.image + '" style="max-width:100%">'
+          + '<p style="color:#9ca3af;font:13px system-ui;padding:10px">' + (d.device && d.device.model || d.key) + ' · ' + (d.note || '') + '</p></body>');
+      }
+    });
+  });
 
   $("btnRefresh").addEventListener("click",function(){ refreshAll(); toast("已刷新") });
   $("btnOut").addEventListener("click",function(){
