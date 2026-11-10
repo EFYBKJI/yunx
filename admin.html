@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0a0c12">
+<title>卡密后台</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%91%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#0a0c12; --bg2:#12151f; --card:#161a25; --card2:#1c2130;
+  --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14);
+  --tx:#eaeef7; --tx2:#8d97ad; --tx3:#5e6679;
+  --pri:#4ade80; --pri2:#22d3ee; --acc:#a78bfa;
+  --ok:#4ade80; --warn:#fbbf24; --bad:#fb7185; --info:#60a5fa;
+  --r:16px; --ease:cubic-bezier(.22,.61,.36,1);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--tx);
+  font-family:system-ui,-apple-system,"HarmonyOS Sans SC","PingFang SC","Noto Sans CJK SC",sans-serif;
+  font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:none;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(620px 340px at 8% -6%, rgba(74,222,128,.14), transparent 70%),
+    radial-gradient(560px 320px at 96% 0%, rgba(167,139,250,.14), transparent 70%);
+}
+.wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:0 14px}
+input,button,select{font-family:inherit;font-size:15px;color:inherit}
+button{border:0;background:none;cursor:pointer;padding:0}
+::selection{background:rgba(74,222,128,.3)}
+
+#login{min-height:100vh;display:grid;place-items:center;padding:24px 16px}
+.lbox{width:100%;max-width:380px}
+.logo{
+  width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:30px;
+  background:linear-gradient(145deg,var(--pri),var(--pri2));
+  box-shadow:0 16px 40px -14px rgba(74,222,128,.6);margin:0 auto 18px;
+}
+.lbox h1{margin:0 0 6px;font-size:24px;text-align:center;letter-spacing:-.5px}
+.lbox .sub{margin:0 0 26px;text-align:center;color:var(--tx2);font-size:13.5px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;color:var(--tx2);margin:0 0 7px 2px}
+.field input{
+  width:100%;padding:14px 16px;border-radius:13px;
+  background:var(--card);border:1px solid var(--line);color:var(--tx);
+  outline:none;transition:.2s var(--ease);font-size:15px;
+}
+.field input:focus{border-color:rgba(74,222,128,.55);background:var(--card2)}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px 20px;border-radius:13px;font-weight:700;font-size:15px;
+  background:var(--card2);border:1px solid var(--line);color:var(--tx);
+  transition:.18s var(--ease);
+}
+.btn:active{transform:scale(.975)}
+.btn.block{width:100%}
+.btn.pri{
+  background:linear-gradient(100deg,var(--pri),var(--pri2));color:#04120a;border-color:transparent;
+  box-shadow:0 12px 30px -12px rgba(74,222,128,.8);
+}
+.btn.ghost{background:transparent}
+.btn.sm{padding:9px 14px;font-size:13.5px;border-radius:11px}
+.btn.danger{color:var(--bad);border-color:rgba(251,113,133,.3);background:rgba(251,113,133,.08)}
+.btn.good{color:var(--ok);border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.08)}
+.err{color:var(--bad);font-size:13px;min-height:20px;margin:2px 0 10px;white-space:pre-wrap}
+
+header{
+  position:sticky;top:0;z-index:30;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  background:rgba(10,12,18,.82);border-bottom:1px solid var(--line);
+  padding:calc(env(safe-area-inset-top,0px) + 10px) 0 10px;
+}
+.nav{display:flex;align-items:center;gap:9px}
+.nav .t{font-weight:800;font-size:16px;letter-spacing:-.2px;display:flex;align-items:center;gap:8px}
+.live{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(74,222,128,.16)}
+.nav .sp{margin-left:auto;display:flex;gap:6px}
+.ibtn{
+  width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-size:16px;
+  background:var(--card);border:1px solid var(--line);
+}
+.ibtn:active{transform:scale(.94)}
+
+.apps{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 12px}
+.app{
+  padding:12px 14px;border-radius:15px;background:var(--card);border:1px solid var(--line);
+  text-align:left;transition:.2s var(--ease);position:relative;overflow:hidden;
+}
+.app .n{font-weight:750;font-size:14.5px;display:block}
+.app .c{font-size:11.5px;color:var(--tx2);margin-top:2px;display:block}
+.app.on{
+  border-color:rgba(74,222,128,.5);
+  background:linear-gradient(160deg,rgba(74,222,128,.14),var(--card));
+}
+.app.on::after{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(var(--pri),var(--pri2));
+}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px}
+.st{padding:11px 8px;border-radius:13px;background:var(--card);border:1px solid var(--line);text-align:center}
+.st b{display:block;font-size:19px;line-height:1.25;font-weight:800}
+.st span{font-size:10.5px;color:var(--tx2)}
+.st.g b{color:var(--ok)} .st.y b{color:var(--warn)} .st.r b{color:var(--bad)}
+
+.panel{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:15px;margin-bottom:12px;
+}
+.panel h2{
+  margin:0 0 13px;font-size:14px;font-weight:750;color:var(--tx);
+  display:flex;align-items:center;gap:7px;
+}
+.panel h2 em{font-style:normal;color:var(--tx2);font-weight:500;font-size:12px;margin-left:auto}
+.lbl{font-size:12px;color:var(--tx2);margin:0 0 7px 2px;display:flex;align-items:center;gap:6px}
+.lbl b{color:var(--pri);font-weight:700}
+
+.stepper{
+  display:flex;align-items:center;background:var(--bg2);border:1px solid var(--line);
+  border-radius:13px;overflow:hidden;height:48px;margin-bottom:14px;
+}
+.stepper button{
+  width:48px;height:100%;display:grid;place-items:center;font-size:20px;color:var(--tx2);
+  background:rgba(255,255,255,.03);
+}
+.stepper button:active{background:rgba(255,255,255,.1)}
+.stepper input{
+  flex:1;min-width:0;text-align:center;background:none;border:0;color:var(--tx);
+  font-size:17px;font-weight:800;outline:none;-moz-appearance:textfield;
+}
+.stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{-webkit-appearance:none}
+
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:15px}
+.chip{
+  padding:9px 14px;border-radius:11px;font-size:13.5px;font-weight:600;
+  background:var(--bg2);border:1px solid var(--line);color:var(--tx2);
+  transition:.16s var(--ease);
+}
+.chip:active{transform:scale(.95)}
+.chip.on{
+  background:linear-gradient(100deg,rgba(74,222,128,.22),rgba(34,211,238,.18));
+  border-color:rgba(74,222,128,.5);color:var(--pri);font-weight:750;
+}
+.chip.on.warn{
+  background:linear-gradient(100deg,rgba(251,191,36,.22),rgba(251,113,133,.16));
+  border-color:rgba(251,191,36,.45);color:var(--warn);
+}
+
+.searchbar{display:flex;gap:8px;margin-bottom:10px}
+.searchbar input{
+  flex:1;min-width:0;padding:11px 15px;border-radius:12px;
+  background:var(--card);border:1px solid var(--line);outline:none;color:var(--tx);font-size:14px;
+}
+.searchbar input:focus{border-color:rgba(74,222,128,.4)}
+.filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px;margin-bottom:4px;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.fchip{
+  flex:0 0 auto;padding:7px 13px;border-radius:999px;font-size:12.5px;font-weight:600;
+  background:var(--card);border:1px solid var(--line);color:var(--tx2);transition:.16s;
+}
+.fchip.on{background:rgba(74,222,128,.16);border-color:rgba(74,222,128,.45);color:var(--pri)}
+
+.rows{display:flex;flex-direction:column;gap:8px;padding-bottom:calc(24px + var(--safe-bottom))}
+.row{
+  padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line);
+  transition:.18s var(--ease);
+}
+.row:active{background:var(--card2);transform:scale(.995)}
+.row .top{display:flex;align-items:center;gap:8px}
+.row .k{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;font-weight:700;
+  letter-spacing:.4px;
+}
+.row .b{
+  margin-left:auto;font-size:10.5px;font-weight:750;padding:3px 8px;border-radius:6px;
+  border:1px solid currentColor;flex:0 0 auto;
+}
+.b.ok{color:var(--ok)} .b.mute{color:var(--tx3)} .b.warn{color:var(--warn)} .b.bad{color:var(--bad)}
+.row .mt{display:flex;align-items:center;gap:9px;margin-top:5px;font-size:11.5px;color:var(--tx2);flex-wrap:wrap}
+.row .mt i{font-style:normal}
+.row .mt i.dot{width:3px;height:3px;border-radius:50%;background:var(--tx3)}
+.row .mt .hi{color:var(--info)}
+
+.empty{text-align:center;padding:50px 20px;color:var(--tx2);font-size:13.5px}
+.empty div{font-size:34px;margin-bottom:10px;opacity:.7}
+
+#sheet{
+  position:fixed;inset:0;z-index:60;display:none;align-items:flex-end;justify-content:center;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(3px);
+}
+#sheet.show{display:flex}
+.sbox{
+  width:100%;max-width:720px;background:var(--bg2);
+  border-radius:22px 22px 0 0;border-top:1px solid var(--line2);
+  padding:8px 18px calc(20px + var(--safe-bottom));
+  max-height:86vh;overflow:auto;
+  animation:up .26s var(--ease);
+}
+@keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
+.grab{width:38px;height:4px;border-radius:99px;background:var(--line2);margin:6px auto 14px}
+.sbox h3{margin:0 0 3px;font-size:18px;letter-spacing:-.3px;word-break:break-all;font-family:ui-monospace,monospace}
+.sbox .sk{color:var(--tx2);font-size:12.5px;margin:0 0 16px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:9px 14px;font-size:13.5px;margin-bottom:16px}
+.kv dt{color:var(--tx2)}
+.kv dd{margin:0;text-align:right;font-weight:600;word-break:break-all}
+.logs{border-top:1px solid var(--line);padding-top:13px;margin-bottom:16px}
+.logs h4{margin:0 0 10px;font-size:13px;color:var(--tx2);font-weight:600}
+.log{display:flex;align-items:center;gap:9px;font-size:12.5px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.log:last-child{border:0}
+.log .d{width:6px;height:6px;border-radius:50%;flex:0 0 auto}
+.log .d.ok{background:var(--ok)} .log .d.no{background:var(--bad)}
+.log .m{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.log .tm{color:var(--tx3);font-size:11.5px;flex:0 0 auto}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+#out{
+  position:fixed;inset:0;z-index:70;display:none;align-items:flex-end;justify-content:center;
+  background:rgba(0,0,0,.6);
+}
+#out.show{display:flex}
+.obox{
+  width:100%;max-width:720px;background:var(--bg2);border-radius:22px 22px 0 0;
+  padding:20px 18px calc(20px + var(--safe-bottom));max-height:80vh;overflow:auto;
+  animation:up .26s var(--ease);
+}
+.obox h3{margin:0 0 4px;font-size:18px}
+.obox p{margin:0 0 14px;color:var(--tx2);font-size:13px}
+.keys{
+  background:#080a0f;border:1px solid var(--line);border-radius:13px;padding:13px;
+  font-family:ui-monospace,monospace;font-size:13.5px;line-height:2;white-space:pre;
+  overflow:auto;max-height:36vh;user-select:all;letter-spacing:.4px;
+}
+
+#toast{
+  position:fixed;left:50%;bottom:calc(30px + var(--safe-bottom));transform:translate(-50%,16px);
+  background:#232a3a;color:#fff;padding:11px 20px;border-radius:99px;font-size:13.5px;font-weight:600;
+  opacity:0;pointer-events:none;transition:.26s var(--ease);z-index:99;
+  border:1px solid var(--line2);max-width:88vw;text-align:center;
+}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="lbox">
+    <div class="logo">🔑</div>
+    <h1>卡密后台</h1>
+    <p class="sub">云析 · 卡密中枢 统一管理</p>
+
+    <div class="field">
+      <label>服务地址</label>
+      <input id="api" type="text" placeholder="http://127.0.0.1:8090" spellcheck="false" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>管理密码</label>
+      <input id="token" type="password" placeholder="ADMIN_TOKEN" autocomplete="off">
+    </div>
+    <div class="err" id="err"></div>
+    <button class="btn pri block" id="doLogin">连接后台</button>
+    <p style="color:var(--tx3);font-size:11.5px;margin:16px 2px 0;line-height:1.7">
+      密码只保存在本机浏览器，不会上传到任何第三方。<br>后台本身不含卡密数据，密码错了看不到任何东西。
+    </p>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <header>
+    <div class="wrap nav">
+      <span class="t"><span class="live"></span>卡密后台</span>
+      <span class="sp">
+        <button class="ibtn" id="btnRefresh" title="刷新">⟳</button>
+        <button class="ibtn" id="btnOut" title="退出">⏻</button>
+      </span>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="apps" id="apps"></div>
+
+    <div class="stats">
+      <div class="st"><b id="s-total">0</b><span>总数</span></div>
+      <div class="st g"><b id="s-bound">0</b><span>已绑定</span></div>
+      <div class="st y"><b id="s-unused">0</b><span>未使用</span></div>
+      <div class="st r"><b id="s-bad">0</b><span>禁用/过期</span></div>
+    </div>
+
+    <div class="panel">
+      <h2>✨ 生成卡密 <em id="gen-for">云析</em></h2>
+
+      <div class="lbl">数量 <b id="lbl-n">5</b> 张</div>
+      <div class="stepper">
+        <button id="n-sub">−</button>
+        <input id="n" type="number" value="5" min="1" max="50">
+        <button id="n-add">+</button>
+      </div>
+
+      <div class="lbl">有效时长</div>
+      <div class="chips" id="dur"></div>
+
+      <div class="lbl">使用次数限制 <span style="color:var(--tx3)">（临时卡密用）</span></div>
+      <div class="chips" id="uses"></div>
+
+      <button class="btn pri block" id="btnGen" style="margin-top:4px">生成并复制</button>
+    </div>
+
+    <div class="searchbar">
+      <input id="q" type="text" placeholder="搜索卡密…" autocomplete="off">
+      <button class="btn sm" id="btnExport">导出</button>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="rows" id="rows"></div>
+  </div>
+</div>
+
+<div id="sheet"><div class="sbox" id="sbox"></div></div>
+<div id="out"><div class="obox">
+  <h3>✅ 生成成功</h3>
+  <p id="out-hint"></p>
+  <div class="keys" id="out-keys"></div>
+  <div class="acts" style="margin-top:14px">
+    <button class="btn" id="out-copy">复制全部</button>
+    <button class="btn pri" id="out-close">完成</button>
+  </div>
+</div></div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var LS_API="kx_api", LS_TOK="kx_tok";
+  var api="", token="", rows=[], curApp="yunx", apps={};
+
+  var $=function(id){return document.getElementById(id)};
+  function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  function toast(m){
+    var t=$("toast"); t.textContent=m; t.classList.add("show");
+    clearTimeout(t._h); t._h=setTimeout(function(){t.classList.remove("show")},2000);
+  }
+  function fmt(ts){
+    if(!ts) return "—";
+    var d=new Date(ts*1000), p=function(x){return x<10?"0"+x:x};
+    return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+" "+p(d.getHours())+":"+p(d.getMinutes());
+  }
+  function fmtDate(ts){
+    if(!ts) return "永久";
+    var d=new Date(ts*1000), p=function(x){return x<10?"0"+x:x};
+    return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());
+  }
+  function left(ts){
+    if(!ts) return "";
+    var s=ts-Math.floor(Date.now()/1000);
+    if(s<=0) return "已过期";
+    var d=Math.floor(s/86400), h=Math.floor(s%86400/3600), m=Math.floor(s%3600/60);
+    if(d>0) return "剩 "+d+" 天";
+    if(h>0) return "剩 "+h+" 小时";
+    return "剩 "+m+" 分钟";
+  }
+
+  function call(path){
+    var base=api.replace(/\/+$/,"");
+    return fetch(base+path,{
+      method:"GET",
+      headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"}
+    }).then(function(r){
+      return r.json().catch(function(){return {ok:false,msg:"返回不是 JSON，检查服务地址"}});
+    });
+  }
+
+  function login(){
+    api=$("api").value.trim(); token=$("token").value.trim();
+    var e=$("err"); e.textContent="";
+    if(!api){e.textContent="请填服务地址";return}
+    if(!token){e.textContent="请填管理密码";return}
+    if(!/^https?:\/\//.test(api)) api="http://"+api;
+
+    call("/admin/apps").then(function(res){
+      if(!res||!res.ok){ e.textContent=(res&&res.msg)||"连接失败"; return; }
+      apps=res.data.apps;
+      try{localStorage.setItem(LS_API,api);localStorage.setItem(LS_TOK,token)}catch(x){}
+      $("login").classList.add("hidden");
+      $("app").classList.remove("hidden");
+      buildApps(); buildChips(); refreshAll();
+    }).catch(function(err){
+      e.textContent="连不上服务："+err.message+"\n检查地址能否打开、是否需 https";
+    });
+  }
+  $("doLogin").addEventListener("click",login);
+  $("token").addEventListener("keydown",function(ev){if(ev.key==="Enter")login()});
+
+  function buildApps(){
+    var h="";
+    Object.keys(apps).forEach(function(id){
+      var a=apps[id];
+      h+='<button class="app'+(id===curApp?" on":"")+'" data-app="'+id+'">'
+        +'<span class="n">'+esc(a.name)+'</span>'
+        +'<span class="c" id="cnt-'+id+'">— 张卡密</span></button>';
+    });
+    $("apps").innerHTML=h;
+  }
+  $("apps").addEventListener("click",function(ev){
+    var b=ev.target.closest("[data-app]"); if(!b) return;
+    curApp=b.getAttribute("data-app");
+    Array.prototype.forEach.call($("apps").children,function(el){el.classList.toggle("on",el.getAttribute("data-app")===curApp)});
+    $("gen-for").textContent=apps[curApp].name;
+    refreshAll();
+  });
+
+  var DURS=[
+    {k:"1h",hours:1,name:"1小时"},
+    {k:"6h",hours:6,name:"6小时"},
+    {k:"1d",days:1,name:"1天"},
+    {k:"3d",days:3,name:"3天"},
+    {k:"7d",days:7,name:"7天"},
+    {k:"15d",days:15,name:"15天"},
+    {k:"30d",days:30,name:"30天"},
+    {k:"90d",days:90,name:"90天"},
+    {k:"365d",days:365,name:"365天"},
+    {k:"forever",days:0,hours:0,name:"永久"}
+  ];
+  var USES=[{v:0,name:"不限"},{v:1,name:"只能用1次"},{v:3,name:"3次"},{v:5,name:"5次"},{v:10,name:"10次"}];
+  var selDur="7d", selUses=0;
+
+  function buildChips(){
+    $("dur").innerHTML=DURS.map(function(d){
+      var temp=(d.hours&&!d.days);
+      return '<button class="chip'+(selDur===d.k?" on":"")+(temp?" warn":"")+'" data-dur="'+d.k+'">'+d.name+'</button>';
+    }).join("");
+    $("uses").innerHTML=USES.map(function(u){
+      return '<button class="chip'+(selUses===u.v?" on":"")+'" data-uses="'+u.v+'">'+u.name+'</button>';
+    }).join("");
+  }
+  $("dur").addEventListener("click",function(ev){
+    var b=ev.target.closest("[data-dur]"); if(!b) return;
+    selDur=b.getAttribute("data-dur"); buildChips();
+  });
+  $("uses").addEventListener("click",function(ev){
+    var b=ev.target.closest("[data-uses]"); if(!b) return;
+    selUses=parseInt(b.getAttribute("data-uses"),10); buildChips();
+  });
+
+  function setN(v){
+    v=Math.max(1,Math.min(50,v||1)); $("n").value=v; $("lbl-n").textContent=v;
+  }
+  $("n-sub").addEventListener("click",function(){setN(parseInt($("n").value,10)-1)});
+  $("n-add").addEventListener("click",function(){setN(parseInt($("n").value,10)+1)});
+  $("n").addEventListener("input",function(){ $("lbl-n").textContent=$("n").value||1 });
+
+  $("btnGen").addEventListener("click",function(){
+    var d=DURS.filter(function(x){return x.k===selDur})[0]||DURS[4];
+    var n=parseInt($("n").value,10)||1;
+    var q="/admin/new?app="+encodeURIComponent(curApp)+"&n="+n;
+    if(d.days) q+="&days="+d.days;
+    if(d.hours) q+="&hours="+d.hours;
+    if(selUses>0) q+="&max_uses="+selUses;
+
+    var btn=this; btn.disabled=true; btn.textContent="生成中…";
+    call(q).then(function(res){
+      btn.disabled=false; btn.textContent="生成并复制";
+      if(res&&res.ok){
+        var ks=res.data.keys||[];
+        $("out-keys").textContent=ks.join("\n");
+        $("out-hint").textContent=apps[curApp].name+" · "+res.data.plan+" · 共 "+ks.length+" 张";
+        $("out").classList.add("show");
+        copy(ks.join("\n"),true);
+        refreshAll();
+      }else{
+        toast((res&&res.msg)||"生成失败");
+      }
+    }).catch(function(){ btn.disabled=false; btn.textContent="生成并复制"; toast("网络错误") });
+  });
+
+  function copy(txt,silent){
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(function(){ if(!silent) toast("已复制") },
+        function(){ if(!silent) toast("复制失败，长按手动复制") });
+    }else if(!silent){ toast("长按文本手动复制") }
+  }
+  $("out-copy").addEventListener("click",function(){ copy($("out-keys").textContent) });
+  $("out-close").addEventListener("click",function(){ $("out").classList.remove("show") });
+
+  var filter="all";
+  var FILTERS=[["all","全部"],["bound","已绑定"],["unused","未使用"],["disabled","已禁用"],["expired","已过期"]];
+  $("filters").innerHTML=FILTERS.map(function(f){
+    return '<button class="fchip'+(f[0]==="all"?" on":"")+'" data-f="'+f[0]+'">'+f[1]+'</button>';
+  }).join("");
+  $("filters").addEventListener("click",function(ev){
+    var b=ev.target.closest("[data-f]"); if(!b) return;
+    filter=b.getAttribute("data-f");
+    Array.prototype.forEach.call($("filters").children,function(el){el.classList.toggle("on",el===b)});
+    render();
+  });
+  $("q").addEventListener("input",render);
+
+  function statusOf(k){
+    var n=Math.floor(Date.now()/1000);
+    if(k.disabled) return {c:"bad",t:"已禁用"};
+    if(k.expire_at&&k.expire_at<n) return {c:"bad",t:"已过期"};
+    if(k.max_uses>0&&k.uses>=k.max_uses) return {c:"warn",t:"次数用完"};
+    if(k.device) return {c:"ok",t:"使用中"};
+    return {c:"mute",t:"未使用"};
+  }
+
+  function render(){
+    var kw=($("q").value||"").trim().toUpperCase();
+    var n=Math.floor(Date.now()/1000);
+    var list=rows.filter(function(k){
+      if(kw&&k.key.indexOf(kw)<0) return false;
+      var st=statusOf(k).t;
+      if(filter==="bound") return st==="使用中";
+      if(filter==="unused") return st==="未使用";
+      if(filter==="disabled") return !!k.disabled;
+      if(filter==="expired") return !!(k.expire_at&&k.expire_at<n);
+      return true;
+    });
+
+    if(!list.length){
+      $("rows").innerHTML='<div class="empty"><div>🗂️</div>还没有卡密<br>上面选好时长，点一下生成</div>';
+      return;
+    }
+
+    $("rows").innerHTML=list.map(function(k){
+      var st=statusOf(k);
+      var meta=[];
+      meta.push('<i>'+esc(k.plan||"—")+'</i>');
+      meta.push('<i class="dot"></i>');
+      meta.push('<i>'+(k.expire_at?fmtDate(k.expire_at)+' 到期':'永久')+'</i>');
+      if(k.expire_at&&k.expire_at>n) meta.push('<i class="hi">'+left(k.expire_at)+'</i>');
+      if(k.uses>0){ meta.push('<i class="dot"></i>'); meta.push('<i>登录 '+k.uses+' 次</i>'); }
+      return '<div class="row" data-key="'+esc(k.key)+'">'
+        +'<div class="top"><span class="k">'+esc(k.key)+'</span><span class="b '+st.c+'">'+st.t+'</span></div>'
+        +'<div class="mt">'+meta.join("")+'</div>'
+        +'</div>';
+    }).join("");
+  }
+
+  $("rows").addEventListener("click",function(ev){
+    var r=ev.target.closest("[data-key]"); if(!r) return;
+    openKey(r.getAttribute("data-key"));
+  });
+
+  function openKey(key){
+    call("/admin/key?key="+encodeURIComponent(key)).then(function(res){
+      if(!res||!res.ok){ toast((res&&res.msg)||"读取失败"); return; }
+      var d=res.data;
+      var logs=(d.logs||[]).map(function(l){
+        return '<div class="log"><span class="d '+(l.ok?"ok":"no")+'"></span>'
+          +'<span class="m">'+esc(l.msg||(l.ok?"登录成功":"失败"))+(l.ip?' · '+esc(l.ip):'')+'</span>'
+          +'<span class="tm">'+fmt(l.t)+'</span></div>';
+      }).join("")||'<div class="log" style="color:var(--tx3)">还没有登录记录</div>';
+
+      $("sbox").innerHTML=
+        '<div class="grab"></div>'
+        +'<h3>'+esc(d.key)+'</h3>'
+        +'<p class="sk">'+(apps[d.app]?esc(apps[d.app].name):esc(d.app))+' · '+esc(d.plan||"—")+'</p>'
+        +'<dl class="kv">'
+        +'<dt>状态</dt><dd>'+statusOf(d).t+'</dd>'
+        +'<dt>到期时间</dt><dd>'+esc(d.expire_str||"永久")+'</dd>'
+        +'<dt>创建时间</dt><dd>'+fmt(d.created_at)+'</dd>'
+        +'<dt>登录次数</dt><dd>'+d.uses+' 次'+(d.max_uses>0?' / 上限 '+d.max_uses:'')+'</dd>'
+        +'<dt>绑定设备</dt><dd>'+(d.device?esc(d.device):"未绑定")+'</dd>'
+        +(d.bind_at?'<dt>绑定时间</dt><dd>'+fmt(d.bind_at)+'</dd>':'')
+        +'</dl>'
+        +'<div class="logs"><h4>最近登录记录</h4>'+logs+'</div>'
+        +'<div class="acts">'
+        +'<button class="btn sm" data-a="copy">复制卡密</button>'
+        +(d.disabled
+            ?'<button class="btn sm good" data-a="unblock">恢复使用</button>'
+            :'<button class="btn sm danger" data-a="block">禁用</button>')
+        +(d.device?'<button class="btn sm" data-a="unbind">解绑设备</button>':'<span></span>')
+        +'<button class="btn sm danger" data-a="delete">删除卡密</button>'
+        +'</div>';
+
+      $("sbox").setAttribute("data-key",d.key);
+      $("sheet").classList.add("show");
+    });
+  }
+
+  $("sheet").addEventListener("click",function(ev){
+    if(ev.target===this){ this.classList.remove("show"); return; }
+    var b=ev.target.closest("[data-a]"); if(!b) return;
+    var key=$("sbox").getAttribute("data-key"), a=b.getAttribute("data-a");
+    if(a==="copy"){ copy(key); return; }
+    if(a==="delete"&&!confirm("删除后无法恢复，确定？")) return;
+
+    b.disabled=true;
+    call("/admin/"+a+"?key="+encodeURIComponent(key)).then(function(res){
+      b.disabled=false;
+      toast((res&&res.msg)||"完成");
+      $("sheet").classList.remove("show");
+      refreshAll();
+    }).catch(function(){ b.disabled=false; toast("网络错误") });
+  });
+
+  $("btnExport").addEventListener("click",function(){
+    if(!rows.length){ toast("没有数据"); return; }
+    var head=["卡密","应用","套餐","创建时间","到期","绑定","设备","禁用","登录次数"];
+    var lines=[head.join(",")];
+    rows.forEach(function(k){
+      lines.push([k.key,(apps[k.app]||{}).name||k.app,k.plan||"",fmt(k.created_at),k.expire_str,
+        k.device?"是":"否",k.device||"",k.disabled?"是":"否",k.uses||0]
+        .map(function(v){return '"'+String(v).replace(/"/g,'""')+'"'}).join(","));
+    });
+    var blob=new Blob(["\ufeff"+lines.join("\n")],{type:"text/csv;charset=utf-8"});
+    var a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download="卡密_"+curApp+"_"+new Date().toISOString().slice(0,10)+".csv";
+    a.click();
+    setTimeout(function(){URL.revokeObjectURL(a.href)},3000);
+    toast("已导出 "+rows.length+" 条");
+  });
+
+  function refreshAll(){
+    call("/admin/list?app="+encodeURIComponent(curApp)).then(function(res){
+      if(res&&res.ok){ rows=(res.data&&res.data.list)||[]; render(); }
+      else if(res&&res.code===401){ toast("管理密码失效"); }
+    });
+    call("/admin/stats").then(function(res){
+      if(!res||!res.ok) return;
+      var s=res.data.apps||{};
+      var a=s[curApp]||{total:0,bound:0,unused:0,disabled:0};
+      var n=Math.floor(Date.now()/1000);
+      var expired=rows.filter(function(k){return k.expire_at&&k.expire_at<n}).length;
+      $("s-total").textContent=a.total||0;
+      $("s-bound").textContent=a.bound||0;
+      $("s-unused").textContent=a.unused||0;
+      $("s-bad").textContent=(a.disabled||0)+expired;
+      Object.keys(s).forEach(function(id){
+        var el=$("cnt-"+id); if(el) el.textContent=(s[id].total||0)+" 张卡密";
+      });
+    });
+  }
+
+  $("btnRefresh").addEventListener("click",function(){ refreshAll(); toast("已刷新") });
+  $("btnOut").addEventListener("click",function(){
+    try{localStorage.removeItem(LS_TOK)}catch(e){}
+    location.reload();
+  });
+
+  (function(){
+    var a=null,t=null;
+    try{a=localStorage.getItem(LS_API);t=localStorage.getItem(LS_TOK)}catch(e){}
+    if(a&&t){ $("api").value=a; $("token").value=t; login(); }
+    else{
+      var h=location.hostname;
+      $("api").value=(h&&h!=="127.0.0.1"&&h!=="localhost"&&h!=="")
+        ? location.protocol+"//"+h+(location.port?":"+location.port:"")
+        : "http://127.0.0.1:8090";
+    }
+    setN(5);
+  })();
+})();
+</script>
+</body>
+</html>
