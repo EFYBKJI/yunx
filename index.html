@@ -2,394 +2,130 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f5f6f8">
-<title>登录 · 云析</title>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<title>应用下载 · 云析</title>
 <style>
 :root{
-  --bg:#f5f6f8; --card:#ffffff; --line:rgba(15,23,42,.09);
+  --bg:#f5f6f8; --card:#fff; --line:rgba(15,23,42,.08);
   --tx:#0f172a; --tx2:#64748b; --tx3:#94a3b8;
-  --pri:#2563eb; --pri2:#3b82f6; --ok:#16a34a; --bad:#dc2626;
+  --pri:#2563eb; --pri2:#3b82f6; --ok:#16a34a;
   --r:16px; --ease:cubic-bezier(.22,.61,.36,1);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;height:100%}
+html,body{margin:0;padding:0}
 body{
-  background:var(--bg);color:var(--tx);
+  background:var(--bg);color:var(--tx);line-height:1.6;
   font-family:system-ui,-apple-system,"HarmonyOS Sans SC","PingFang SC","Noto Sans CJK SC",sans-serif;
-  font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;
-  display:flex;align-items:center;justify-content:center;padding:20px;
+  -webkit-font-smoothing:antialiased;
+  padding:0 14px 40px;
 }
-.wrap{width:100%;max-width:400px}
+.wrap{max-width:560px;margin:0 auto}
 
-/* logo */
-.brand{text-align:center;margin-bottom:26px}
+header{text-align:center;padding:44px 0 26px}
 .mark{
-  width:60px;height:60px;border-radius:18px;margin:0 auto 14px;
-  display:grid;place-items:center;font-size:28px;font-weight:900;color:#fff;
+  width:62px;height:62px;border-radius:19px;margin:0 auto 16px;
+  display:grid;place-items:center;font-size:29px;font-weight:900;color:#fff;
   background:linear-gradient(145deg,var(--pri),var(--pri2));
-  box-shadow:0 12px 28px -12px rgba(37,99,235,.55);
+  box-shadow:0 14px 30px -14px rgba(37,99,235,.6);
 }
-.brand h1{margin:0;font-size:22px;letter-spacing:-.4px;font-weight:800}
-.brand p{margin:5px 0 0;color:var(--tx2);font-size:13px}
+header h1{margin:0;font-size:24px;font-weight:800;letter-spacing:-.5px}
+header p{margin:7px 0 0;color:var(--tx2);font-size:13.5px}
 
-/* 卡片 */
-.card{
-  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
-  padding:22px 20px 20px;box-shadow:0 8px 28px -18px rgba(15,23,42,.28);
+.sect{font-size:12.5px;font-weight:700;color:var(--tx3);letter-spacing:1.2px;margin:22px 0 10px 4px;text-transform:uppercase}
+
+.app{
+  display:flex;align-items:center;gap:13px;padding:15px;border-radius:var(--r);
+  background:var(--card);border:1px solid var(--line);margin-bottom:10px;
+  box-shadow:0 6px 20px -16px rgba(15,23,42,.3);
 }
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#eef1f5;border-radius:12px;padding:4px;margin-bottom:20px}
-.tab{
-  padding:9px;border:0;background:none;border-radius:9px;font-size:14px;font-weight:600;
-  color:var(--tx2);cursor:pointer;font-family:inherit;transition:.18s var(--ease);
+.ico{
+  width:50px;height:50px;flex:0 0 50px;border-radius:14px;display:grid;place-items:center;
+  font-size:23px;font-weight:800;color:#fff;
 }
-.tab.on{background:#fff;color:var(--pri);box-shadow:0 2px 6px -2px rgba(15,23,42,.16)}
-
-.field{margin-bottom:14px}
-.field label{display:block;font-size:12.5px;color:var(--tx2);margin:0 0 6px 2px;font-weight:500}
-input{
-  width:100%;padding:13px 14px;border-radius:11px;border:1px solid var(--line);
-  background:#fbfcfd;color:var(--tx);font-size:15px;outline:none;font-family:inherit;
-  transition:.18s var(--ease);
+.ico.a{background:linear-gradient(145deg,#2563eb,#3b82f6)}
+.ico.b{background:linear-gradient(145deg,#7c3aed,#a78bfa)}
+.ico.c{background:linear-gradient(145deg,#0d9488,#2dd4bf)}
+.info{flex:1;min-width:0}
+.info b{display:block;font-size:15.5px;font-weight:750;margin-bottom:2px}
+.info span{font-size:12.5px;color:var(--tx2)}
+.info em{
+  font-style:normal;font-size:11px;color:var(--ok);font-weight:700;
+  background:rgba(22,163,74,.09);border:1px solid rgba(22,163,74,.25);
+  padding:1px 6px;border-radius:5px;margin-left:6px;
 }
-input:focus{border-color:var(--pri);background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.09)}
-input::placeholder{color:var(--tx3)}
-
-/* 验证码行 */
-.coderow{display:flex;gap:8px}
-.coderow input{flex:1;min-width:0;letter-spacing:6px;font-size:17px;font-weight:700;text-align:center;font-family:ui-monospace,monospace}
-.send{
-  flex:0 0 auto;padding:0 16px;border-radius:11px;border:1px solid var(--pri);
-  background:rgba(37,99,235,.06);color:var(--pri);font-size:13px;font-weight:700;
-  cursor:pointer;font-family:inherit;white-space:nowrap;transition:.18s var(--ease);
+.dl{
+  flex:0 0 auto;padding:10px 18px;border-radius:11px;
+  background:linear-gradient(100deg,var(--pri),var(--pri2));color:#fff;
+  font-size:13.5px;font-weight:700;text-decoration:none;white-space:nowrap;
+  box-shadow:0 8px 20px -10px rgba(37,99,235,.8);transition:.18s var(--ease);
 }
-.send:disabled{opacity:.55;cursor:not-allowed;border-color:var(--line);color:var(--tx3);background:#f4f6f8}
-.send:active:not(:disabled){transform:scale(.97)}
+.dl:active{transform:scale(.96)}
+.dl.ghost{background:#fff;color:var(--pri);border:1px solid var(--line);box-shadow:none}
 
-.btn{
-  width:100%;padding:14px;border-radius:12px;border:0;cursor:pointer;
-  font-size:15.5px;font-weight:700;color:#fff;font-family:inherit;
-  background:linear-gradient(100deg,var(--pri),var(--pri2));
-  box-shadow:0 10px 24px -12px rgba(37,99,235,.75);
-  transition:.18s var(--ease);margin-top:6px;
-}
-.btn:active{transform:scale(.985)}
-.btn:disabled{opacity:.6;box-shadow:none}
-
-.tip{font-size:12px;color:var(--tx3);margin:12px 2px 0;text-align:center;line-height:1.7}
-.msg{font-size:13px;min-height:20px;margin:10px 2px 0;text-align:center;font-weight:500}
-.msg.ok{color:var(--ok)} .msg.bad{color:var(--bad)} .msg.info{color:var(--tx2)}
-
-.cf{margin:14px 0 4px;display:flex;justify-content:center;min-height:66px}
-.hidden{display:none!important}
-
-/* 登录后 */
-#home{display:none}
-.user{
-  display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;
-  background:#fff;border:1px solid var(--line);margin-bottom:14px;
-}
-.avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;background:linear-gradient(145deg,var(--pri),var(--pri2))}
-.user b{display:block;font-size:15px}
-.user span{font-size:12.5px;color:var(--tx2)}
-.link{
-  display:flex;align-items:center;justify-content:space-between;padding:14px 16px;
-  border-radius:12px;background:#fff;border:1px solid var(--line);margin-bottom:9px;
+.linkrow{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:15px 16px;border-radius:13px;background:var(--card);
+  border:1px solid var(--line);margin-bottom:10px;
   text-decoration:none;color:var(--tx);font-size:14.5px;font-weight:600;
 }
-.link:active{background:#f8fafc}
-.link span{color:var(--tx3);font-weight:400}
-.foot{text-align:center;font-size:12px;color:var(--tx3);margin-top:22px}
+.linkrow span{color:var(--tx3);font-weight:400;font-size:13px}
+.linkrow:active{background:#f8fafc}
+
+.tip{
+  margin-top:20px;padding:15px;border-radius:13px;
+  background:rgba(37,99,235,.05);border:1px solid rgba(37,99,235,.15);
+  font-size:12.5px;color:var(--tx2);line-height:1.8;
+}
+.tip b{color:var(--tx)}
+
+footer{text-align:center;font-size:12px;color:var(--tx3);margin-top:26px;line-height:1.9}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <div class="brand">
+  <header>
     <div class="mark">云</div>
-    <h1>云析</h1>
-    <p>登录后管理你的账号与下载</p>
-  </div>
+    <h1>应用下载</h1>
+    <p>点一下直接下载安装，无需注册</p>
+  </header>
 
-  <!-- ========== 登录 / 注册 ========== -->
-  <div class="card" id="auth">
-    <div class="tabs">
-      <button class="tab on" id="tabLogin">登录</button>
-      <button class="tab" id="tabReg">注册</button>
+  <div class="sect">Android 应用</div>
+
+  <div class="app">
+    <div class="ico a">云</div>
+    <div class="info">
+      <b>云析 <em>v1.5.0</em></b>
+      <span>网盘多账号下载器 · 6.5 MB</span>
     </div>
-
-    <!-- 登录 -->
-    <form id="formLogin" autocomplete="on">
-      <div class="field">
-        <label>邮箱 / 用户名</label>
-        <input id="l-acc" type="text" placeholder="QQ 邮箱或用户名" autocomplete="username">
-      </div>
-      <div class="field">
-        <label>密码</label>
-        <input id="l-pwd" type="password" placeholder="请输入密码" autocomplete="current-password">
-      </div>
-      <div class="cf" id="cf-login"></div>
-      <div class="msg" id="m-login"></div>
-      <button class="btn" type="submit" id="btnLogin">登录</button>
-      <p class="tip">还没有账号？点上面的「注册」</p>
-    </form>
-
-    <!-- 注册 -->
-    <form id="formReg" class="hidden" autocomplete="on">
-      <div class="field">
-        <label>邮箱</label>
-        <input id="r-mail" type="email" placeholder="QQ 邮箱 / 163 / Gmail" autocomplete="email">
-      </div>
-      <div class="field">
-        <label>验证码</label>
-        <div class="coderow">
-          <input id="r-code" type="text" inputmode="numeric" maxlength="6" placeholder="6 位数字">
-          <button type="button" class="send" id="btnSend">发送验证码</button>
-        </div>
-      </div>
-      <div class="field">
-        <label>设置密码</label>
-        <input id="r-pwd" type="password" placeholder="至少 8 位" autocomplete="new-password">
-      </div>
-      <div class="field">
-        <label>确认密码</label>
-        <input id="r-pwd2" type="password" placeholder="再输一次" autocomplete="new-password">
-      </div>
-      <div class="cf" id="cf-reg"></div>
-      <div class="msg" id="m-reg"></div>
-      <button class="btn" type="submit" id="btnReg">注册并登录</button>
-      <p class="tip">验证码 10 分钟内有效 · 同一邮箱每天最多 10 条</p>
-    </form>
+    <a class="dl" href="https://efybkji.github.io/yunx/apk/yunx-1.5.0.apk" download>下载</a>
   </div>
 
-  <!-- ========== 登录后 ========== -->
-  <div id="home">
-    <div class="user">
-      <div class="avatar" id="u-av">云</div>
-      <div>
-        <b id="u-name">—</b>
-        <span id="u-mail">—</span>
-      </div>
+  <div class="app">
+    <div class="ico b">卡</div>
+    <div class="info">
+      <b>卡密中枢 <em>v2.0.0</em></b>
+      <span>AI 卡密 / 额度管理 · 14 MB</span>
     </div>
-    <a class="link" href="product.html">软件下载 <span>›</span></a>
-    <a class="link" href="tools/">工具合集 <span>›</span></a>
-    <button class="btn" id="btnOut" style="background:#fff;color:var(--bad);border:1px solid var(--line);box-shadow:none">退出登录</button>
+    <a class="dl" href="https://efybkji.github.io/yunx/apk/keyhub-2.0.0.apk" download>下载</a>
   </div>
 
-  <p class="foot">© <span id="yr"></span> 云析 · 个人开发</p>
+  <div class="sect">更多</div>
+
+  <a class="linkrow" href="https://efybkji.github.io/yunx/tools/">免费工具合集 <span>58 个工具 ›</span></a>
+  <a class="linkrow" href="https://efybkji.github.io/yunx/apk/admin.apk" download>卡密后台 APK <span>仅管理员</span></a>
+
+  <div class="tip">
+    <b>安装提示：</b>下载后点击安装，如果提示「禁止安装未知应用」，进设置允许你的浏览器安装即可。<br>
+    <b>版本更新：</b>直接下载新版本覆盖安装，数据不会丢。
+  </div>
+
+  <footer>
+    © <span id="yr"></span> 云析 · 个人开发<br>
+    所有应用仅供个人使用
+  </footer>
 </div>
-
-<script>
-(function(){
-  "use strict";
-  var API = "https://api.yunxapp.dpdns.org";
-  var SITEKEY = "0x4AAAAAAF7pb3HKK_7BYX-T";
-
-  var $ = function(id){ return document.getElementById(id); };
-  $("yr").textContent = new Date().getFullYear();
-
-  function toast(el, text, type){
-    el.className = "msg " + (type || "info");
-    el.textContent = text || "";
-  }
-
-  /* ---------- Turnstile ---------- */
-  var tkLogin = null, tkReg = null;
-  window.onTurnstileLogin = function(t){ tkLogin = t; };
-  window.onTurnstileReg = function(t){ tkReg = t; };
-
-  var localOk = false, tsTried = 0;
-  function fallbackCheck(){
-    ["cf-login","cf-reg"].forEach(function(id){
-      var box = $(id);
-      if(!box || box.getAttribute("data-fb")) return;
-      box.setAttribute("data-fb","1");
-      box.innerHTML = '<label style="display:flex;align-items:center;gap:9px;padding:12px 16px;border:1px solid #d6dde8;border-radius:11px;background:#fbfcfd;font-size:14px;color:#334155;cursor:pointer">'
-        + '<input type="checkbox" id="fb-' + id + '" style="width:19px;height:19px;margin:0;accent-color:#2563eb">'
-        + '我不是机器人（简化验证）</label>';
-      var cb = document.getElementById("fb-" + id);
-      if(cb) cb.onchange = function(){ localOk = cb.checked; };
-    });
-  }
-  function renderTurnstile(){
-    if(!window.turnstile) {
-      tsTried++;
-      if(tsTried > 20) { fallbackCheck(); return; }   /* 6 秒还没加载出来 */
-      setTimeout(renderTurnstile, 300); return;
-    }
-    ["cf-login", "cf-reg"].forEach(function(id){
-      var box = $(id);
-      if(box && !box.getAttribute("data-done")){
-        box.setAttribute("data-done", "1");
-        try{
-          window.turnstile.render("#" + id, {
-            sitekey: SITEKEY,
-            theme: "light",
-            callback: id === "cf-login" ? window.onTurnstileLogin : window.onTurnstileReg
-          });
-        }catch(e){}
-      }
-    });
-  }
-  renderTurnstile();
-
-  /* ---------- 请求 ---------- */
-  function post(path, body, token){
-    var h = { "Content-Type": "application/json" };
-    if(token) h.Authorization = "Bearer " + token;
-    return fetch(API + path, { method: "POST", headers: h, body: JSON.stringify(body) })
-      .then(function(r){ return r.json().catch(function(){ return { ok:false, msg:"服务暂时不可用" }; }); })
-      .catch(function(){ return { ok:false, msg:"网络错误，请检查网络" }; });
-  }
-  function get(path, token){
-    return fetch(API + path, { headers: { Authorization: "Bearer " + token } })
-      .then(function(r){ return r.json().catch(function(){ return { ok:false }; }); })
-      .catch(function(){ return { ok:false }; });
-  }
-
-  /* ---------- 切 tab ---------- */
-  var isReg = false;
-  function switchTab(reg){
-    isReg = reg;
-    $("tabLogin").classList.toggle("on", !reg);
-    $("tabReg").classList.toggle("on", reg);
-    $("formLogin").classList.toggle("hidden", reg);
-    $("formReg").classList.toggle("hidden", !reg);
-    toast($("m-login"), ""); toast($("m-reg"), "");
-  }
-  $("tabLogin").onclick = function(){ switchTab(false); };
-  $("tabReg").onclick = function(){ switchTab(true); };
-
-  /* ---------- 发送验证码（60 秒冷却 + 每天 10 条） ---------- */
-  var cooling = false, timer = null;
-  $("btnSend").onclick = function(){
-    var mail = $("r-mail").value.trim();
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)){
-      toast($("m-reg"), "请先填正确的邮箱", "bad"); return;
-    }
-    if(cooling) return;
-    if(!tkReg && !localOk){ toast($("m-reg"), "请先完成人机验证", "bad"); return; }
-
-    var btn = this;
-    btn.disabled = true; btn.textContent = "发送中…";
-    post("/api/send-code", { email: mail, turnstile: tkReg || (localOk ? "skip" : "") }).then(function(res){
-      if(res && res.ok){
-        toast($("m-reg"), "验证码已发送，请查收邮箱（含垃圾箱）", "ok");
-        startCooldown(60);
-      }else{
-        var msg = (res && res.msg) || "发送失败";
-        if(res && res.code === 4291) msg = "今天这封邮箱已经发满 10 条了，明天再来";
-        if(res && res.code === 4292) msg = "发送太频繁，请 60 秒后再试";
-        toast($("m-reg"), msg, "bad");
-        btn.disabled = false; btn.textContent = "发送验证码";
-        if(window.turnstile){ try{ window.turnstile.reset("#cf-reg"); }catch(e){} }
-      }
-    });
-  };
-
-  function startCooldown(sec){
-    cooling = true;
-    var btn = $("btnSend");
-    btn.disabled = true;
-    var left = sec;
-    btn.textContent = left + " 秒后重发";
-    clearInterval(timer);
-    timer = setInterval(function(){
-      left--;
-      if(left <= 0){
-        clearInterval(timer); cooling = false;
-        btn.disabled = false; btn.textContent = "重新发送";
-      }else{
-        btn.textContent = left + " 秒后重发";
-      }
-    }, 1000);
-  }
-
-  /* ---------- 注册 ---------- */
-  $("formReg").onsubmit = function(e){
-    e.preventDefault();
-    var mail = $("r-mail").value.trim();
-    var code = $("r-code").value.trim();
-    var p1 = $("r-pwd").value, p2 = $("r-pwd2").value;
-
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) return toast($("m-reg"), "邮箱格式不对", "bad");
-    if(!/^\d{6}$/.test(code)) return toast($("m-reg"), "验证码是 6 位数字", "bad");
-    if(p1.length < 8) return toast($("m-reg"), "密码至少 8 位", "bad");
-    if(p1 !== p2) return toast($("m-reg"), "两次密码不一致", "bad");
-    if(!tkReg && !localOk) return toast($("m-reg"), "请先完成人机验证", "bad");
-
-    var btn = this.querySelector("button[type=submit]");
-    btn.disabled = true; btn.textContent = "注册中…";
-    post("/api/register", { email: mail, code: code, password: p1, turnstile: tkReg || (localOk ? "skip" : "") }).then(function(res){
-      btn.disabled = false; btn.textContent = "注册并登录";
-      if(res && res.ok && res.data && res.data.token){
-        toast($("m-reg"), "注册成功，正在进入…", "ok");
-        save(res.data);
-      }else{
-        toast($("m-reg"), (res && res.msg) || "注册失败", "bad");
-        if(window.turnstile){ try{ window.turnstile.reset("#cf-reg"); }catch(e){} }
-      }
-    });
-  };
-
-  /* ---------- 登录 ---------- */
-  $("formLogin").onsubmit = function(e){
-    e.preventDefault();
-    var acc = $("l-acc").value.trim();
-    var pwd = $("l-pwd").value;
-    if(!acc) return toast($("m-login"), "请输入邮箱或用户名", "bad");
-    if(!pwd) return toast($("m-login"), "请输入密码", "bad");
-
-    var btn = $("btnLogin");
-    btn.disabled = true; btn.textContent = "登录中…";
-    post("/api/login", { account: acc, password: pwd, turnstile: tkLogin || (localOk ? "skip" : "") }).then(function(res){
-      btn.disabled = false; btn.textContent = "登录";
-      if(res && res.ok && res.data && res.data.token){
-        toast($("m-login"), "登录成功", "ok");
-        save(res.data);
-      }else{
-        toast($("m-login"), (res && res.msg) || "账号或密码错误", "bad");
-        if(window.turnstile){ try{ window.turnstile.reset("#cf-login"); }catch(e){} }
-      }
-    });
-  };
-
-  /* ---------- 登录态 ---------- */
-  function save(d){
-    try{
-      localStorage.setItem("yx_token", d.token);
-      localStorage.setItem("yx_user", JSON.stringify(d.user || { email: d.email || "" }));
-    }catch(e){}
-    showHome(d.user || { email: d.email });
-  }
-  function showHome(u){
-    $("auth").classList.add("hidden");
-    document.querySelector(".brand").classList.add("hidden");
-    $("home").style.display = "block";
-    var name = (u && (u.name || u.email)) || "用户";
-    $("u-name").textContent = name;
-    $("u-mail").textContent = (u && u.email) || "";
-    $("u-av").textContent = name.charAt(0).toUpperCase();
-  }
-  $("btnOut").onclick = function(){
-    var t = null;
-    try{ t = localStorage.getItem("yx_token"); }catch(e){}
-    if(t) post("/api/logout", {}, t);
-    try{ localStorage.removeItem("yx_token"); localStorage.removeItem("yx_user"); }catch(e){}
-    location.reload();
-  };
-
-  (function init(){
-    var t = null, u = null;
-    try{ t = localStorage.getItem("yx_token"); u = JSON.parse(localStorage.getItem("yx_user") || "null"); }catch(e){}
-    if(!t) return;
-    get("/api/me", t).then(function(res){
-      if(res && res.ok){ showHome((res.data && res.data.user) || u || {}); }
-      else{ try{ localStorage.removeItem("yx_token"); }catch(e){} }
-    });
-  })();
-})();
-</script>
+<script>document.getElementById("yr").textContent=new Date().getFullYear();</script>
 </body>
 </html>
