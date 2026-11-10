@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--
+  ============================================================
+   产品页 · 云析（Android APK 下载）
+   ------------------------------------------------------------
+   上线前要改的地方，正文里都用【改】标了出来：
+     1. 卡密怎么获取（#buy 区块）
+     2. 三张截图（#shots 区块）
+   安装包在 apk/ 目录；换文件名要同步改下载按钮的 href。
+  ============================================================
+-->
+<title>云析 · 网盘多账号下载器 for Android</title>
+<meta name="description" content="云析 —— Android 上的网盘多账号下载器：多账号并行下载、蓝奏云/迅雷直连、临时转存、下载调试。">
+<meta name="theme-color" content="#0b0e14">
+<meta property="og:title" content="云析 · 网盘多账号下载器">
+<meta property="og:description" content="多账号并行下载、蓝奏云/迅雷直连、临时转存，Android 7.0+。">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%235eead4'/%3E%3Ctext x='50' y='68' font-size='54' text-anchor='middle' fill='%230b0e14' font-family='sans-serif' font-weight='bold'%3E%E4%BA%91%3C/text%3E%3C/svg%3E">
+
+<style>
+:root{
+  --bg:#0b0e14; --bg-soft:#11151f; --card:rgba(255,255,255,.05);
+  --line:rgba(255,255,255,.09); --text:#e8ecf4; --muted:#8b95a9;
+  --accent:#5eead4; --accent2:#a78bfa;
+  --radius:18px; --max:1060px; --ease:cubic-bezier(.22,.61,.36,1);
+}
+[data-theme="light"]{
+  --bg:#f6f7f9; --bg-soft:#fff; --card:#fff; --line:rgba(15,23,42,.1);
+  --text:#111827; --muted:#5b6472; --accent:#0d9488; --accent2:#7c3aed;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--text);line-height:1.72;
+  font-family:system-ui,-apple-system,"HarmonyOS Sans SC","PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased;
+  transition:background .3s var(--ease),color .3s var(--ease);
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(760px 460px at 8% -10%, color-mix(in srgb,var(--accent) 22%,transparent), transparent 70%),
+    radial-gradient(660px 420px at 94% 2%, color-mix(in srgb,var(--accent2) 18%,transparent), transparent 70%);
+}
+a{color:inherit;text-decoration:none}
+::selection{background:color-mix(in srgb,var(--accent) 34%,transparent)}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
+
+header{
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  background:color-mix(in srgb,var(--bg) 76%,transparent);
+  border-bottom:1px solid transparent;transition:border-color .3s;
+}
+header.stuck{border-bottom-color:var(--line)}
+nav{max-width:var(--max);margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:16px}
+.logo .mark{
+  width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
+  background:linear-gradient(145deg,var(--accent),var(--accent2));
+  color:#08111a;font-size:16px;font-weight:900;
+}
+nav .links{display:flex;gap:4px;margin:0 0 0 auto;list-style:none;padding:0}
+nav .links a{font-size:13.5px;color:var(--muted);padding:6px 10px;border-radius:9px;transition:.2s}
+nav .links a:hover{color:var(--text);background:var(--card)}
+.icon-btn{
+  width:36px;height:36px;flex:0 0 36px;display:grid;place-items:center;cursor:pointer;
+  border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--text);
+  font-size:15px;transition:.24s var(--ease);
+}
+.icon-btn:hover{transform:rotate(-16deg) scale(1.06)}
+@media(max-width:600px){nav .links{display:none}}
+
+.hero{padding:clamp(36px,7vw,72px) 0 clamp(28px,5vw,48px);text-align:center}
+.appicon{
+  width:96px;height:96px;margin:0 auto 22px;border-radius:26px;display:grid;place-items:center;
+  font-size:46px;font-weight:900;color:#08111a;
+  background:linear-gradient(145deg,var(--accent),var(--accent2));
+  box-shadow:0 24px 60px -24px color-mix(in srgb,var(--accent) 80%,transparent);
+}
+.hero h1{
+  font-size:clamp(30px,6.8vw,50px);line-height:1.14;letter-spacing:-1.4px;
+  margin:0 0 14px;font-weight:850;
+}
+.hero h1 em{font-style:normal;background:linear-gradient(100deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .sub{font-size:clamp(14.5px,3.7vw,17.5px);color:var(--muted);margin:0 auto 26px;max-width:38em}
+.meta-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:28px;font-size:12.5px;color:var(--muted)}
+.meta-row span{padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card)}
+.dl-btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:16px 40px;border-radius:999px;font-size:16.5px;font-weight:800;
+  background:linear-gradient(100deg,var(--accent),var(--accent2));color:#08111a;
+  box-shadow:0 20px 46px -18px color-mix(in srgb,var(--accent) 90%,transparent);
+  transition:.24s var(--ease);
+}
+.dl-btn:hover{transform:translateY(-3px);box-shadow:0 26px 54px -18px color-mix(in srgb,var(--accent) 100%,transparent)}
+.dl-note{margin:14px 0 0;font-size:12.5px;color:var(--muted)}
+.dl-note a{color:var(--accent);border-bottom:1px solid color-mix(in srgb,var(--accent) 40%,transparent)}
+
+section{padding:clamp(34px,6vw,64px) 0;scroll-margin-top:70px}
+.kicker{font-size:11.5px;font-weight:800;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);margin:0 0 10px}
+h2{font-size:clamp(22px,4.8vw,32px);letter-spacing:-.8px;margin:0 0 22px;font-weight:800;line-height:1.25}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.card{padding:20px;border-radius:var(--radius);border:1px solid var(--line);background:var(--card);transition:.26s var(--ease)}
+.card:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--accent) 38%,transparent)}
+.card .e{font-size:24px;margin-bottom:10px}
+.card h3{margin:0 0 6px;font-size:15.5px;font-weight:750}
+.card p{margin:0;font-size:13.5px;color:var(--muted)}
+
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
+.shot{
+  aspect-ratio:9/17;border-radius:16px;border:1px dashed var(--line);
+  display:grid;place-items:center;text-align:center;color:var(--muted);font-size:13px;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 8%,var(--bg-soft)),var(--bg-soft));
+  overflow:hidden;padding:16px;
+}
+.shot img{width:100%;height:100%;object-fit:cover;border-radius:15px}
+.shot small{opacity:.75;font-size:11.5px}
+
+.steps{counter-reset:s;display:grid;gap:12px}
+.step{
+  counter-increment:s;position:relative;padding:16px 18px 16px 56px;
+  border-radius:14px;border:1px solid var(--line);background:var(--card);font-size:14px;
+}
+.step::before{
+  content:counter(s);position:absolute;left:16px;top:15px;
+  width:26px;height:26px;border-radius:8px;display:grid;place-items:center;
+  background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent);
+  font-weight:800;font-size:13px;
+}
+.step b{color:var(--text)}
+.step span{color:var(--muted)}
+
+.info{width:100%;border-collapse:collapse;font-size:13.5px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.info tr+tr td{border-top:1px solid var(--line)}
+.info td{padding:11px 15px}
+.info td:first-child{color:var(--muted);width:36%;white-space:nowrap}
+.info td:last-child{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;word-break:break-all}
+
+details{border:1px solid var(--line);border-radius:13px;background:var(--card);padding:14px 17px;margin-bottom:10px}
+details[open]{border-color:color-mix(in srgb,var(--accent) 30%,transparent)}
+summary{cursor:pointer;font-weight:650;font-size:14.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"＋ ";color:var(--accent);font-weight:800}
+details[open] summary::before{content:"－ "}
+details p{margin:10px 0 0;font-size:13.5px;color:var(--muted)}
+
+.notice{
+  padding:clamp(22px,4vw,34px);border-radius:20px;text-align:center;
+  border:1px solid var(--line);
+  background:linear-gradient(150deg,color-mix(in srgb,var(--accent2) 12%,var(--bg-soft)),var(--bg-soft));
+}
+.notice h2{margin-bottom:8px}
+.notice p{color:var(--muted);margin:0 auto 20px;max-width:36em;font-size:14px}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;padding:11px 24px;border-radius:999px;
+  font-size:14px;font-weight:700;border:1px solid var(--line);background:var(--card);
+  color:var(--text);cursor:pointer;transition:.22s var(--ease);font-family:inherit;
+}
+.btn:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 50%,transparent)}
+
+footer{
+  border-top:1px solid var(--line);padding:26px 0 44px;margin-top:30px;
+  font-size:12.5px;color:var(--muted);
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+}
+footer a:hover{color:var(--accent)}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<header id="hd">
+  <nav>
+    <a href="#" class="logo"><span class="mark">云</span>云析</a>
+    <ul class="links">
+      <li><a href="#features">功能</a></li>
+      <li><a href="#install">安装</a></li>
+      <li><a href="#version">版本</a></li>
+      <li><a href="#faq">问题</a></li>
+    </ul>
+    <a class="btn" style="margin-left:auto;padding:8px 16px;font-size:13px" href="#download">下载</a>
+    <button class="icon-btn" id="theme" aria-label="切换深浅色" title="切换深浅色">🌙</button>
+  </nav>
+</header>
+
+<div class="wrap">
+
+  <section class="hero reveal">
+    <div class="appicon">云</div>
+    <h1>云析 · <em>网盘多账号下载器</em></h1>
+    <p class="sub">
+      一个 App 管住你所有网盘账号：多账号并行下载、蓝奏云与迅雷直连、
+      临时转存一键搞定，下载进度实时可见。
+    </p>
+    <div class="meta-row">
+      <span>v1.3.0</span>
+      <span>6.41 MB</span>
+      <span>Android 7.0+</span>
+      <span>更新于 2026-11-10</span>
+    </div>
+    <a class="dl-btn" id="download" href="apk/yunxi-1.3.0.apk" download>⬇ 下载 APK</a>
+    <p class="dl-note">直连下载，不经过任何网盘 · 校验值见<a href="#version">版本信息</a></p>
+  </section>
+
+  <section id="features">
+    <p class="kicker reveal">Features</p>
+    <h2 class="reveal">它解决什么问题</h2>
+    <div class="grid">
+      <div class="card reveal">
+        <div class="e">👥</div>
+        <h3>多账号同时下载</h3>
+        <p>多个网盘账号并行跑任务，不用来回复制 cookie、不用切号，一份任务列表全管住。</p>
+      </div>
+      <div class="card reveal">
+        <div class="e">☁️</div>
+        <h3>蓝奏云 / 迅雷直连</h3>
+        <p>解析直链后直接下载，绕开网页端的限速与广告页，速度给到带宽上限。</p>
+      </div>
+      <div class="card reveal">
+        <div class="e">📦</div>
+        <h3>临时转存</h3>
+        <p>先把文件转存到自己的空间再下载，避免源链接失效后前功尽弃。</p>
+      </div>
+      <div class="card reveal">
+        <div class="e">📊</div>
+        <h3>下载进度可视化</h3>
+        <p>瞬时速度、剩余时间、已跑区间一目了然，失败任务单独重试。</p>
+      </div>
+      <div class="card reveal">
+        <div class="e">🔧</div>
+        <h3>内置下载调试</h3>
+        <p>出错时能看到完整请求与响应，定位是账号失效、链接过期还是网络问题。</p>
+      </div>
+      <div class="card reveal">
+        <div class="e">🔋</div>
+        <h3>后台稳定运行</h3>
+        <p>引导你忽略电池优化，锁屏后任务不被打断，大文件也能挂着下完。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="shots">
+    <p class="kicker reveal">Screenshots</p>
+    <h2 class="reveal">界面一览</h2>
+    <div class="shots">
+      <!-- 【改】把下面三个 div 的内容换成 <img src="img/shot1.png" alt="首页"> -->
+      <div class="shot reveal">截图 1<br><small>把 &lt;img&gt; 放进来</small></div>
+      <div class="shot reveal">截图 2<br><small>建议 9:16 竖图</small></div>
+      <div class="shot reveal">截图 3<br><small>1~3 张就够</small></div>
+    </div>
+  </section>
+
+  <section id="install">
+    <p class="kicker reveal">Install</p>
+    <h2 class="reveal">三步装上</h2>
+    <div class="steps">
+      <div class="step reveal"><b>点上面的「下载 APK」</b><br><span>浏览器会开始下载，文件约 6.4 MB。</span></div>
+      <div class="step reveal"><b>允许安装未知来源应用</b><br><span>点开下载好的文件；如果系统提示「禁止安装未知应用」，进设置允许你用的浏览器或文件管理器安装即可。</span></div>
+      <div class="step reveal"><b>打开并输入卡密</b><br><span>首次启动需要卡密激活，激活后即可正常使用。</span></div>
+    </div>
+  </section>
+
+  <section id="version">
+    <p class="kicker reveal">Version</p>
+    <h2 class="reveal">版本信息</h2>
+    <table class="info reveal">
+      <tr><td>版本号</td><td>1.3.0（versionCode 14）</td></tr>
+      <tr><td>安装包大小</td><td>6,721,835 字节（6.41 MB）</td></tr>
+      <tr><td>包名</td><td>com.yunx.app</td></tr>
+      <tr><td>系统要求</td><td>Android 7.0 及以上（minSdk 24）</td></tr>
+      <tr><td>目标版本</td><td>Android 14（targetSdk 34）</td></tr>
+      <tr><td>更新日期</td><td>2026-11-10</td></tr>
+      <tr><td>SHA-256</td><td>86501164243dc85c8f55f39e686b1ce0c71181d98d177c21d3f0fa40c385ff3f</td></tr>
+    </table>
+  </section>
+
+  <section id="buy">
+    <div class="notice reveal">
+      <h2>需要卡密？</h2>
+      <!-- 【改】把这里换成你真实的卡密获取方式 -->
+      <p>这里写你的卡密获取方式：加微信 / QQ 群 / 爱发电页面，付款后自动或人工发卡密。</p>
+      <a class="btn" href="#" id="buy-btn">获取卡密（待填写）</a>
+    </div>
+  </section>
+
+  <section id="faq">
+    <p class="kicker reveal">FAQ</p>
+    <h2 class="reveal">常见问题</h2>
+    <details class="reveal"><summary>提示「无法安装，已阻止安装未知应用」怎么办？</summary>
+      <p>设置 → 应用 → 特殊权限 → 安装未知应用 → 找到你用的浏览器（或文件管理器）→ 允许。MIUI、ColorOS 等国产系统路径类似。</p></details>
+    <details class="reveal"><summary>为什么手机管家会提示有风险？</summary>
+      <p>个人开发者没有购买企业签名证书，加上应用需要文件访问权限，部分手机管家会提示「未知来源」。安装包的 SHA-256 已列在上方，可以自己核对。</p></details>
+    <details class="reveal"><summary>卡密能换设备吗？</summary>
+      <p>【改】按你的实际规则写，比如「一台设备一个卡密，换设备需要联系客服解绑」。</p></details>
+    <details class="reveal"><summary>以后怎么更新？</summary>
+      <p>回到这个页面下载最新 APK 覆盖安装即可，数据不会丢。版本号和更新日期都会写在这页上。</p></details>
+    <details class="reveal"><summary>支持 iOS / 电脑吗？</summary>
+      <p>目前只有 Android 版，别的平台还没做。</p></details>
+  </section>
+
+  <footer>
+    <span>© <span id="yr">2025</span> 云析 · 个人开发</span>
+    <span>请勿用于侵犯他人权益的用途</span>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+  document.getElementById("yr").textContent = new Date().getFullYear();
+
+  var root = document.documentElement, tb = document.getElementById("theme"), KEY = "yunx-theme";
+  function apply(m){
+    root.setAttribute("data-theme", m);
+    tb.textContent = m === "light" ? "☀️" : "🌙";
+    try{ localStorage.setItem(KEY, m); }catch(e){}
+  }
+  var saved = null;
+  try{ saved = localStorage.getItem(KEY); }catch(e){}
+  if(!saved && window.matchMedia){
+    saved = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  }
+  apply(saved || "dark");
+  tb.addEventListener("click", function(){
+    apply(root.getAttribute("data-theme") === "light" ? "dark" : "light");
+  });
+
+  var hd = document.getElementById("hd");
+  window.addEventListener("scroll", function(){
+    hd.classList.toggle("stuck", window.scrollY > 6);
+  }, {passive:true});
+
+  var items = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
+  if("IntersectionObserver" in window){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); }
+      });
+    }, {threshold:.1, rootMargin:"0px 0px -30px 0px"});
+    items.forEach(function(el){ io.observe(el); });
+  } else {
+    items.forEach(function(el){ el.classList.add("in"); });
+  }
+  document.querySelectorAll(".hero .reveal").forEach(function(el){ el.classList.add("in"); });
+})();
+</script>
+</body>
+</html>
