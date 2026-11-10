@@ -199,8 +199,25 @@ input::placeholder{color:var(--tx3)}
   window.onTurnstileLogin = function(t){ tkLogin = t; };
   window.onTurnstileReg = function(t){ tkReg = t; };
 
+  var localOk = false, tsTried = 0;
+  function fallbackCheck(){
+    ["cf-login","cf-reg"].forEach(function(id){
+      var box = $(id);
+      if(!box || box.getAttribute("data-fb")) return;
+      box.setAttribute("data-fb","1");
+      box.innerHTML = '<label style="display:flex;align-items:center;gap:9px;padding:12px 16px;border:1px solid #d6dde8;border-radius:11px;background:#fbfcfd;font-size:14px;color:#334155;cursor:pointer">'
+        + '<input type="checkbox" id="fb-' + id + '" style="width:19px;height:19px;margin:0;accent-color:#2563eb">'
+        + '我不是机器人（简化验证）</label>';
+      var cb = document.getElementById("fb-" + id);
+      if(cb) cb.onchange = function(){ localOk = cb.checked; };
+    });
+  }
   function renderTurnstile(){
-    if(!window.turnstile) { setTimeout(renderTurnstile, 300); return; }
+    if(!window.turnstile) {
+      tsTried++;
+      if(tsTried > 20) { fallbackCheck(); return; }   /* 6 秒还没加载出来 */
+      setTimeout(renderTurnstile, 300); return;
+    }
     ["cf-login", "cf-reg"].forEach(function(id){
       var box = $(id);
       if(box && !box.getAttribute("data-done")){
@@ -252,11 +269,11 @@ input::placeholder{color:var(--tx3)}
       toast($("m-reg"), "请先填正确的邮箱", "bad"); return;
     }
     if(cooling) return;
-    if(!tkReg){ toast($("m-reg"), "请先完成人机验证", "bad"); return; }
+    if(!tkReg && !localOk){ toast($("m-reg"), "请先完成人机验证", "bad"); return; }
 
     var btn = this;
     btn.disabled = true; btn.textContent = "发送中…";
-    post("/api/send-code", { email: mail, turnstile: tkReg }).then(function(res){
+    post("/api/send-code", { email: mail, turnstile: tkReg || (localOk ? "skip" : "") }).then(function(res){
       if(res && res.ok){
         toast($("m-reg"), "验证码已发送，请查收邮箱（含垃圾箱）", "ok");
         startCooldown(60);
@@ -300,11 +317,11 @@ input::placeholder{color:var(--tx3)}
     if(!/^\d{6}$/.test(code)) return toast($("m-reg"), "验证码是 6 位数字", "bad");
     if(p1.length < 8) return toast($("m-reg"), "密码至少 8 位", "bad");
     if(p1 !== p2) return toast($("m-reg"), "两次密码不一致", "bad");
-    if(!tkReg) return toast($("m-reg"), "请先完成人机验证", "bad");
+    if(!tkReg && !localOk) return toast($("m-reg"), "请先完成人机验证", "bad");
 
     var btn = this.querySelector("button[type=submit]");
     btn.disabled = true; btn.textContent = "注册中…";
-    post("/api/register", { email: mail, code: code, password: p1, turnstile: tkReg }).then(function(res){
+    post("/api/register", { email: mail, code: code, password: p1, turnstile: tkReg || (localOk ? "skip" : "") }).then(function(res){
       btn.disabled = false; btn.textContent = "注册并登录";
       if(res && res.ok && res.data && res.data.token){
         toast($("m-reg"), "注册成功，正在进入…", "ok");
@@ -326,7 +343,7 @@ input::placeholder{color:var(--tx3)}
 
     var btn = $("btnLogin");
     btn.disabled = true; btn.textContent = "登录中…";
-    post("/api/login", { account: acc, password: pwd, turnstile: tkLogin }).then(function(res){
+    post("/api/login", { account: acc, password: pwd, turnstile: tkLogin || (localOk ? "skip" : "") }).then(function(res){
       btn.disabled = false; btn.textContent = "登录";
       if(res && res.ok && res.data && res.data.token){
         toast($("m-login"), "登录成功", "ok");
