@@ -537,6 +537,7 @@ header{
       meta.push('<i>'+(k.expire_at?fmtDate(k.expire_at)+' 到期':'永久')+'</i>');
       if(k.expire_at&&k.expire_at>n) meta.push('<i class="hi">'+left(k.expire_at)+'</i>');
       if(k.uses>0){ meta.push('<i class="dot"></i>'); meta.push('<i>登录 '+k.uses+' 次</i>'); }
+      if(k.last_device&&k.last_device.m){ meta.push('<i class="dot"></i>'); meta.push('<i>'+esc(k.last_device.m)+'</i>'); }
       return '<div class="row" data-key="'+esc(k.key)+'">'
         +'<div class="top"><span class="k">'+esc(k.key)+'</span><span class="b '+st.c+'">'+st.t+'</span></div>'
         +'<div class="mt">'+meta.join("")+'</div>'
@@ -555,7 +556,7 @@ header{
       var d=res.data;
       var logs=(d.logs||[]).map(function(l){
         return '<div class="log"><span class="d '+(l.ok?"ok":"no")+'"></span>'
-          +'<span class="m">'+esc(l.msg||(l.ok?"登录成功":"失败"))+(l.ip?' · '+esc(l.ip):'')+'</span>'
+          +'<span class="m">'+esc(l.msg||(l.ok?"登录成功":"失败"))+(l.dm?' · '+esc(l.dm):'')+(l.ip?' · '+esc(l.ip):'')+'</span>'
           +'<span class="tm">'+fmt(l.t)+'</span></div>';
       }).join("")||'<div class="log" style="color:var(--tx3)">还没有登录记录</div>';
 
@@ -569,6 +570,9 @@ header{
         +'<dt>创建时间</dt><dd>'+fmt(d.created_at)+'</dd>'
         +'<dt>登录次数</dt><dd>'+d.uses+' 次'+(d.max_uses>0?' / 上限 '+d.max_uses:'')+'</dd>'
         +'<dt>绑定设备</dt><dd>'+(d.device?esc(d.device):"未绑定")+'</dd>'
+        +(d.last_device&&(d.last_device.m||d.last_device.b)?'<dt>设备型号</dt><dd>'+esc(((d.last_device.b||"")+' '+(d.last_device.m||"")).trim())+'</dd>':'')
+        +(d.last_device&&d.last_device.o?'<dt>系统</dt><dd>'+esc(d.last_device.o)+'</dd>':'')
+        +(d.last_device&&d.last_device.v?'<dt>App 版本</dt><dd>'+esc(d.last_device.v)+'</dd>':'')
         +(d.bind_at?'<dt>绑定时间</dt><dd>'+fmt(d.bind_at)+'</dd>':'')
         +'</dl>'
         +'<div class="logs"><h4>最近登录记录</h4>'+logs+'</div>'
