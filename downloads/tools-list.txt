@@ -1,0 +1,138 @@
+工具箱 · 精选免费工具清单
+========================================
+共 58 个工具
+
+
+【系统增强】
+  7-Zip	https://www.7-zip.org/
+    压缩解压神器，开源无广告，比 WinRAR 干净得多。
+  Everything	https://www.voidtools.com/
+    毫秒级搜索全盘文件，装完就回不去了。
+  PowerToys	https://github.com/microsoft/PowerToys
+    微软官方出品的效率增强套装：窗口分屏、批量重命名、取色器。
+  Geek Uninstaller	https://geekuninstaller.com/
+    彻底卸载软件，顺手清理注册表残留。
+  Rufus	https://rufus.ie/
+    做启动 U 盘最快的小工具，装系统必备。
+  Ventoy	https://www.ventoy.net/
+    一个 U 盘装多个系统镜像，拷进去就能用。
+  CrystalDiskInfo	https://crystalmark.info/
+    查看硬盘健康度和温度，坏盘提前预警。
+  Snipaste	https://www.snipaste.com/
+    截图后直接贴在屏幕上当参考，写代码时神器。
+  ShareX	https://getsharex.com/
+    截图 + 录屏 + 上传一条龙，功能最全的开源截图工具。
+
+【效率工具】
+  LocalSend	https://localsend.org/
+    同一 WiFi 下手机电脑互传文件，不压缩、不限速、不过服务器。
+  KDE Connect	https://kdeconnect.kde.org/
+    手机电脑互通：互传文件、共享剪贴板、手机当触控板。
+  Obsidian	https://obsidian.md/
+    本地 Markdown 笔记，双链串联知识，个人使用免费。
+  Logseq	https://logseq.com/
+    大纲式双链笔记，完全开源，数据存在本地。
+  HBuilderX	https://www.dcloud.io/hbuilderx.html
+    国产前端 IDE，uni-app 开发和小程序调试很顺手。
+  Typora	https://typora.io/
+    所见即所得的 Markdown 编辑器，写完就是成品排版。
+
+【开发工具】
+  VS Code	https://code.visualstudio.com/
+    最流行的代码编辑器，插件生态无敌。
+  Git	https://git-scm.com/
+    版本控制的标准工具，配合 GitHub 使用。
+  Node.js	https://nodejs.org/
+    JavaScript 运行环境，前端工程化的地基。
+  Python	https://www.python.org/
+    最好上手的编程语言，脚本、爬虫、AI 都靠它。
+  Android Studio	https://developer.android.google.cn/studio
+    安卓官方开发环境，也能直接跑模拟器。
+  Hoppscotch	https://hoppscotch.io/
+    开源的接口调试工具，轻量替代 Postman，浏览器直接打开。
+  DBeaver	https://dbeaver.io/
+    万能数据库客户端，MySQL、Postgres、SQLite 一个软件全连。
+
+【网络远程】
+  qBittorrent	https://www.qbittorrent.org/
+    开源 BT 下载器，无广告无捆绑。
+  Motrix	https://motrix.app/
+    界面好看的下载器，支持 HTTP / BT / 磁力。
+  Cloudflare WARP	https://1.1.1.1/
+    1.1.1.1 官方客户端，免费改善网络连接质量。
+  Tailscale	https://tailscale.com/
+    零配置组虚拟局域网，几台设备像一个局域网。
+  WireGuard	https://www.wireguard.com/
+    现代轻量 VPN 协议，速度快、代码少。
+  RustDesk	https://rustdesk.com/
+    开源远程桌面，可自建服务器，替代 TeamViewer。
+  ToDesk	https://www.todesk.com/
+    国产远程控制，免费额度够日常用，连接稳定。
+  向日葵	https://sunlogin.oray.com/
+    老牌国产远程控制，穿透能力强。
+  ngrok	https://ngrok.com/
+    一条命令把本机端口暴露到公网，临时演示超方便。
+
+【影音图像】
+  VLC	https://www.videolan.org/
+    万能播放器，什么格式都能放。
+  OBS Studio	https://obsproject.com/
+    免费录屏和直播推流，主播标配。
+  HandBrake	https://handbrake.fr/
+    视频转码压缩，把大文件体积砍一半。
+  Audacity	https://www.audacityteam.org/
+    免费音频剪辑，降噪、裁剪、合成都能做。
+  GIMP	https://www.gimp.org/
+    免费开源的图片处理软件，PS 的替代品。
+  Blender	https://www.blender.org/
+    免费开源的三维建模与动画软件，专业级。
+  PotPlayer	https://potplayer.daum.net/
+    轻量本地播放器，支持倍速、字幕、硬解。
+  剪映专业版	https://www.capcut.cn/
+    上手最快的中文视频剪辑软件，免费版够用。
+
+【安全隐私】
+  Bitwarden	https://bitwarden.com/
+    开源密码管理器，全平台同步，免费版够用。
+  KeePassXC	https://keepassxc.org/
+    完全离线的密码库，数据库文件握在自己手里。
+  VeraCrypt	https://www.veracrypt.fr/
+    给硬盘或文件加密，装敏感资料必备。
+  火绒安全	https://www.huorong.cn/
+    安静的国产杀毒软件，不弹广告不捆绑。
+
+【安卓工具】
+  Termux	https://f-droid.org/packages/com.termux/
+    在手机上跑 Linux 终端，Python、git、ssh 全都能装。
+  F-Droid	https://f-droid.org/
+    开源安卓应用商店，没有广告和追踪。
+  Magisk	https://github.com/topjohnwu/Magisk
+    安卓 root 管理框架，模块化授权。
+  LSPosed	https://github.com/LSPosed/LSPosed
+    基于 Magisk 的模块框架，功能扩展能力很强。
+  MT 管理器	https://mt2.cn/
+    安卓文件管理与 APK 反编译，中文用户的老朋友。
+  Via 浏览器	https://viayoo.com/
+    只有几百 KB 的极简浏览器，支持脚本。
+  阅读（Legado）	https://github.com/gedoor/legado
+    开源阅读器，可导入书源，界面干净。
+
+【在线服务】
+  Squoosh	https://squoosh.app/
+    谷歌出品图片压缩，本地处理不上传，压完直接下载。
+  TinyPNG	https://tinypng.com/
+    PNG / JPG 智能压缩，画质几乎无损。
+  PDF24	https://tools.pdf24.org/zh/
+    PDF 合并、拆分、压缩、转换，全套免费。
+  Excalidraw	https://excalidraw.com/
+    手绘风白板画流程图，导出 PNG 直接能用。
+  Photopea	https://www.photopea.com/
+    浏览器里打开就能用的 PS，能读 PSD 文件。
+  Regex101	https://regex101.com/
+    正则表达式在线调试器，带逐字解释。
+  Carbon	https://carbon.now.sh/
+    把代码片段做成漂亮图片，分享截图用。
+  CloudConvert	https://cloudconvert.com/
+    万能格式转换，视频、音频、文档、图片都行。
+
+整理自「工具箱」网站，所有工具版权归原作者所有。
