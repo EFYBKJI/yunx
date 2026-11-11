@@ -1,0 +1,1320 @@
+{
+ "source": "https://www.dzmm.ai/api/trpc/chat.models",
+ "fetched_at": "2026-11-10",
+ "language": "zh-CN",
+ "defaultModel": "x-apex-surge-0505",
+ "tiers": [
+  {
+   "category": "XL系列",
+   "categoryKey": "xl",
+   "series": "XL-0826",
+   "icon": "🚀",
+   "price": 0.0003,
+   "isApex": false,
+   "minMembershipLevel": 0,
+   "thinking": true,
+   "strictModeration": false,
+   "cardRefusalBlock": false,
+   "description": "稳定均衡，承接清楚，适合常规长聊",
+   "contexts": [
+    {
+     "display": "XL-0826 (10K)",
+     "internal": "nalang-xl-0826-10k",
+     "maxContext": 10000
+    },
+    {
+     "display": "XL-0826 (16K)",
+     "internal": "nalang-xl-0826-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "XL-0826 (32K)",
+     "internal": "nalang-xl-0826",
+     "maxContext": 32000
+    }
+   ]
+  },
+  {
+   "category": "XL系列",
+   "categoryKey": "xl",
+   "series": "XL-1022",
+   "icon": "🚀",
+   "price": 0.0003,
+   "isApex": true,
+   "minMembershipLevel": 0,
+   "thinking": true,
+   "strictModeration": false,
+   "cardRefusalBlock": false,
+   "description": "稳定均衡，承接清楚，适合常规长聊",
+   "contexts": [
+    {
+     "display": "XL-1022 (10K)",
+     "internal": "x-apex-xl-1022-10k",
+     "maxContext": 10000
+    },
+    {
+     "display": "XL-1022 (16K)",
+     "internal": "x-apex-xl-1022-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "XL-1022 (32K)",
+     "internal": "x-apex-xl-1022",
+     "maxContext": 32000
+    }
+   ]
+  },
+  {
+   "category": "Apex系列",
+   "categoryKey": "apex",
+   "series": "Surge-0505",
+   "icon": "⚡",
+   "price": 0.0004,
+   "isApex": true,
+   "minMembershipLevel": 0,
+   "thinking": true,
+   "strictModeration": false,
+   "cardRefusalBlock": false,
+   "description": "情绪反应快，互动感强，适合高代入角色扮演",
+   "contexts": [
+    {
+     "display": "Surge-0505 (16K)",
+     "internal": "x-apex-surge-0505-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "Surge-0505 (32K)",
+     "internal": "x-apex-surge-0505",
+     "maxContext": 32000
+    }
+   ]
+  },
+  {
+   "category": "Apex系列",
+   "categoryKey": "apex",
+   "series": "Surge-0923-b",
+   "icon": "⚡",
+   "price": 0.0004,
+   "isApex": true,
+   "minMembershipLevel": 0,
+   "thinking": true,
+   "strictModeration": false,
+   "cardRefusalBlock": false,
+   "description": "情绪反应快，互动感强，适合高代入角色扮演",
+   "contexts": [
+    {
+     "display": "Surge-0923-b (16K)",
+     "internal": "x-apex-surge-0923-b-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "Surge-0923-b (32K)",
+     "internal": "x-apex-surge-0923-b",
+     "maxContext": 32000
+    }
+   ]
+  },
+  {
+   "category": "Apex系列",
+   "categoryKey": "apex",
+   "series": "Surge-0923-a",
+   "icon": "⚡",
+   "price": 0.0004,
+   "isApex": true,
+   "minMembershipLevel": 0,
+   "thinking": true,
+   "strictModeration": false,
+   "cardRefusalBlock": false,
+   "description": "情绪反应快，互动感强，适合高代入角色扮演",
+   "contexts": [
+    {
+     "display": "Surge-0923-a (16K)",
+     "internal": "x-apex-surge-0923-a-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "Surge-0923-a (32K)",
+     "internal": "x-apex-surge-0923-a",
+     "maxContext": 32000
+    }
+   ]
+  },
+  {
+   "category": "Apex系列",
+   "categoryKey": "apex",
+   "series": "Surge-1018",
+   "icon": "⚡",
+   "price": 0.0004,
+   "isApex": true,
+   "minMembershipLevel": 0,
+   "thinking": true,
+   "strictModeration": false,
+   "cardRefusalBlock": false,
+   "description": "情绪反应快，互动感强，适合高代入角色扮演",
+   "contexts": [
+    {
+     "display": "Surge-1018 (16K)",
+     "internal": "x-apex-surge-1018-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "Surge-1018 (32K)",
+     "internal": "x-apex-surge-1018",
+     "maxContext": 32000
+    }
+   ]
+  },
+  {
+   "category": "Apex系列",
+   "categoryKey": "apex",
+   "series": "Dash-0826",
+   "icon": "⚡",
+   "price": 0.0001,
+   "isApex": true,
+   "minMembershipLevel": 0,
+   "thinking": true,
+   "strictModeration": true,
+   "cardRefusalBlock": false,
+   "description": "响应更快、积分消耗更低，适合长对话高频互动",
+   "contexts": [
+    {
+     "display": "Dash-0826 (16K)",
+     "internal": "x-apex-dash-0826-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "Dash-0826 (32K)",
+     "internal": "x-apex-dash-0826",
+     "maxContext": 32000
+    },
+    {
+     "display": "Dash-0826 (64K)",
+     "internal": "x-apex-dash-0826-64k",
+     "maxContext": 64000
+    },
+    {
+     "display": "Dash-0826 (128K)",
+     "internal": "x-apex-dash-0826-128k",
+     "maxContext": 128000
+    }
+   ]
+  },
+  {
+   "category": "Apex系列",
+   "categoryKey": "apex",
+   "series": "Pulse-0731",
+   "icon": "⚡",
+   "price": 0.0002,
+   "isApex": true,
+   "minMembershipLevel": 0,
+   "thinking": true,
+   "strictModeration": false,
+   "cardRefusalBlock": false,
+   "description": "兼顾响应速度与细节表现，适合长对话和高频剧情互动",
+   "contexts": [
+    {
+     "display": "Pulse-0731 (16K)",
+     "internal": "x-apex-pulse-0731-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "Pulse-0731 (32K)",
+     "internal": "x-apex-pulse-0731",
+     "maxContext": 32000
+    },
+    {
+     "display": "Pulse-0731 (64K)",
+     "internal": "x-apex-pulse-0731-64k",
+     "maxContext": 64000
+    },
+    {
+     "display": "Pulse-0731 (128K)",
+     "internal": "x-apex-pulse-0731-128k",
+     "maxContext": 128000
+    }
+   ]
+  },
+  {
+   "category": "Apex系列",
+   "categoryKey": "apex",
+   "series": "Dash-0727",
+   "icon": "⚡",
+   "price": 0.0001,
+   "isApex": true,
+   "minMembershipLevel": 0,
+   "thinking": true,
+   "strictModeration": false,
+   "cardRefusalBlock": false,
+   "description": "响应更快、积分消耗更低，适合长对话高频互动",
+   "contexts": [
+    {
+     "display": "Dash-0727 (16K)",
+     "internal": "x-apex-dash-0727-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "Dash-0727 (32K)",
+     "internal": "x-apex-dash-0727",
+     "maxContext": 32000
+    },
+    {
+     "display": "Dash-0727 (64K)",
+     "internal": "x-apex-dash-0727-64k",
+     "maxContext": 64000
+    },
+    {
+     "display": "Dash-0727 (128K)",
+     "internal": "x-apex-dash-0727-128k",
+     "maxContext": 128000
+    }
+   ]
+  },
+  {
+   "category": "Apex系列",
+   "categoryKey": "apex",
+   "series": "Vega-1014",
+   "icon": "🧪",
+   "price": 0.0005,
+   "isApex": true,
+   "minMembershipLevel": 3,
+   "thinking": true,
+   "strictModeration": true,
+   "cardRefusalBlock": true,
+   "description": "内测档位，仅对受邀账号开放",
+   "contexts": [
+    {
+     "display": "Vega-1014 (16K)",
+     "internal": "x-apex-vega-1014-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "Vega-1014 (32K)",
+     "internal": "x-apex-vega-1014",
+     "maxContext": 32000
+    },
+    {
+     "display": "Vega-1014 (64K)",
+     "internal": "x-apex-vega-1014-64k",
+     "maxContext": 64000
+    }
+   ]
+  },
+  {
+   "category": "Apex系列",
+   "categoryKey": "apex",
+   "series": "Sigma-0829",
+   "icon": "🧠",
+   "price": 0.0005,
+   "isApex": true,
+   "minMembershipLevel": 3,
+   "thinking": true,
+   "strictModeration": true,
+   "cardRefusalBlock": false,
+   "description": "长线剧情旗舰，结构清楚，适合复杂设定和大篇幅展开",
+   "contexts": [
+    {
+     "display": "Sigma-0829 (16K)",
+     "internal": "x-apex-sigma-0829-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "Sigma-0829 (32K)",
+     "internal": "x-apex-sigma-0829",
+     "maxContext": 32000
+    },
+    {
+     "display": "Sigma-0829 (64K)",
+     "internal": "x-apex-sigma-0829-64k",
+     "maxContext": 64000
+    }
+   ]
+  },
+  {
+   "category": "Apex系列",
+   "categoryKey": "apex",
+   "series": "Flux-0217",
+   "icon": "⚡",
+   "price": 0.0002,
+   "isApex": true,
+   "minMembershipLevel": 0,
+   "thinking": true,
+   "strictModeration": false,
+   "cardRefusalBlock": false,
+   "description": "画面感强，场景推进快，适合沉浸式剧情互动",
+   "contexts": [
+    {
+     "display": "Flux-0217 (10K)",
+     "internal": "x-apex-flux-0217-10k",
+     "maxContext": 10000
+    },
+    {
+     "display": "Flux-0217 (16K)",
+     "internal": "x-apex-flux-0217-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "Flux-0217 (32K)",
+     "internal": "x-apex-flux-0217",
+     "maxContext": 32000
+    }
+   ]
+  },
+  {
+   "category": "Apex系列",
+   "categoryKey": "apex",
+   "series": "Sigma-0621",
+   "icon": "🧠",
+   "price": 0.0005,
+   "isApex": true,
+   "minMembershipLevel": 3,
+   "thinking": true,
+   "strictModeration": false,
+   "cardRefusalBlock": false,
+   "description": "长线剧情旗舰，结构清楚，适合复杂设定和大篇幅展开",
+   "contexts": [
+    {
+     "display": "Sigma-0621 (16K)",
+     "internal": "x-apex-sigma-0621-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "Sigma-0621 (32K)",
+     "internal": "x-apex-sigma-0621",
+     "maxContext": 32000
+    },
+    {
+     "display": "Sigma-0621 (64K)",
+     "internal": "x-apex-sigma-0621-64k",
+     "maxContext": 64000
+    }
+   ]
+  },
+  {
+   "category": "Apex系列",
+   "categoryKey": "apex",
+   "series": "Prism-0626",
+   "icon": "💎",
+   "price": 0.0003,
+   "isApex": true,
+   "minMembershipLevel": 0,
+   "thinking": false,
+   "strictModeration": false,
+   "cardRefusalBlock": false,
+   "description": "高密度沉浸派，刺激直给，适合强场景",
+   "contexts": [
+    {
+     "display": "Prism-0626 (16K)",
+     "internal": "x-apex-prism-0408-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "Prism-0626 (32K)",
+     "internal": "x-apex-prism-0408",
+     "maxContext": 32000
+    }
+   ]
+  },
+  {
+   "category": "Max系列",
+   "categoryKey": "max",
+   "series": "Max-0826",
+   "icon": "👑",
+   "price": 0.0004,
+   "isApex": false,
+   "minMembershipLevel": 0,
+   "thinking": true,
+   "strictModeration": false,
+   "cardRefusalBlock": false,
+   "description": "旗舰稳定款，叙事顺滑，承接直接，适合高质量长聊",
+   "contexts": [
+    {
+     "display": "Max-0826 (10K)",
+     "internal": "nalang-max-0826-10k",
+     "maxContext": 10000
+    },
+    {
+     "display": "Max-0826 (16K)",
+     "internal": "nalang-max-0826-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "Max-0826 (32K)",
+     "internal": "nalang-max-0826",
+     "maxContext": 32000
+    }
+   ]
+  },
+  {
+   "category": "Turbo系列",
+   "categoryKey": "turbo",
+   "series": "Turbo-0826",
+   "icon": "🚀",
+   "price": 0.0001,
+   "isApex": false,
+   "minMembershipLevel": 0,
+   "thinking": true,
+   "strictModeration": false,
+   "cardRefusalBlock": false,
+   "description": "旧版低消耗模型，适合基础聊天",
+   "contexts": [
+    {
+     "display": "Turbo-0826 (10K)",
+     "internal": "nalang-turbo-0826-10k",
+     "maxContext": 10000
+    },
+    {
+     "display": "Turbo-0826 (16K)",
+     "internal": "nalang-turbo-0826-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "Turbo-0826 (32K)",
+     "internal": "nalang-turbo-0826",
+     "maxContext": 32000
+    }
+   ]
+  },
+  {
+   "category": "Turbo系列",
+   "categoryKey": "turbo",
+   "series": "Turbo-0101",
+   "icon": "🚀",
+   "price": 0.0001,
+   "isApex": false,
+   "minMembershipLevel": 0,
+   "thinking": true,
+   "strictModeration": false,
+   "cardRefusalBlock": false,
+   "description": "低消耗均衡款，适合轻量日常聊天",
+   "contexts": [
+    {
+     "display": "Turbo-0101 (10K)",
+     "internal": "nalang-turbo-1115-10k",
+     "maxContext": 10000
+    },
+    {
+     "display": "Turbo-0101 (16K)",
+     "internal": "nalang-turbo-1115-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "Turbo-0101 (32K)",
+     "internal": "nalang-turbo-1115",
+     "maxContext": 32000
+    }
+   ]
+  },
+  {
+   "category": "Medium系列",
+   "categoryKey": "medium",
+   "series": "Medium-0826",
+   "icon": "✨",
+   "price": 0.0002,
+   "isApex": false,
+   "minMembershipLevel": 0,
+   "thinking": true,
+   "strictModeration": false,
+   "cardRefusalBlock": false,
+   "description": "轻量耐用，互动自然，适合日常陪伴和中低消耗长聊",
+   "contexts": [
+    {
+     "display": "Medium-0826 (10K)",
+     "internal": "nalang-medium-0826-10k",
+     "maxContext": 10000
+    },
+    {
+     "display": "Medium-0826 (16K)",
+     "internal": "nalang-medium-0826-16k",
+     "maxContext": 16000
+    },
+    {
+     "display": "Medium-0826 (32K)",
+     "internal": "nalang-medium-0826",
+     "maxContext": 32000
+    }
+   ]
+  }
+ ],
+ "models": [
+  {
+   "internal": "nalang-xl-0826-10k",
+   "display": "XL-0826 (10K)",
+   "family": "nalang",
+   "series": "XL-0826",
+   "category": "XL系列",
+   "maxContext": 10000,
+   "price": 0.0003,
+   "isApex": false,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "稳定均衡，承接清楚，适合常规长聊"
+  },
+  {
+   "internal": "nalang-xl-0826-16k",
+   "display": "XL-0826 (16K)",
+   "family": "nalang",
+   "series": "XL-0826",
+   "category": "XL系列",
+   "maxContext": 16000,
+   "price": 0.0003,
+   "isApex": false,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "稳定均衡，承接清楚，适合常规长聊"
+  },
+  {
+   "internal": "nalang-xl-0826",
+   "display": "XL-0826 (32K)",
+   "family": "nalang",
+   "series": "XL-0826",
+   "category": "XL系列",
+   "maxContext": 32000,
+   "price": 0.0003,
+   "isApex": false,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "稳定均衡，承接清楚，适合常规长聊"
+  },
+  {
+   "internal": "x-apex-xl-1022-10k",
+   "display": "XL-1022 (10K)",
+   "family": "apex",
+   "series": "XL-1022",
+   "category": "XL系列",
+   "maxContext": 10000,
+   "price": 0.0003,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "稳定均衡，承接清楚，适合常规长聊"
+  },
+  {
+   "internal": "x-apex-xl-1022-16k",
+   "display": "XL-1022 (16K)",
+   "family": "apex",
+   "series": "XL-1022",
+   "category": "XL系列",
+   "maxContext": 16000,
+   "price": 0.0003,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "稳定均衡，承接清楚，适合常规长聊"
+  },
+  {
+   "internal": "x-apex-xl-1022",
+   "display": "XL-1022 (32K)",
+   "family": "apex",
+   "series": "XL-1022",
+   "category": "XL系列",
+   "maxContext": 32000,
+   "price": 0.0003,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "稳定均衡，承接清楚，适合常规长聊"
+  },
+  {
+   "internal": "x-apex-surge-0505-16k",
+   "display": "Surge-0505 (16K)",
+   "family": "apex",
+   "series": "Surge-0505",
+   "category": "Apex系列",
+   "maxContext": 16000,
+   "price": 0.0004,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "情绪反应快，互动感强，适合高代入角色扮演"
+  },
+  {
+   "internal": "x-apex-surge-0505",
+   "display": "Surge-0505 (32K)",
+   "family": "apex",
+   "series": "Surge-0505",
+   "category": "Apex系列",
+   "maxContext": 32000,
+   "price": 0.0004,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "情绪反应快，互动感强，适合高代入角色扮演"
+  },
+  {
+   "internal": "x-apex-surge-0923-b-16k",
+   "display": "Surge-0923-b (16K)",
+   "family": "apex",
+   "series": "Surge-0923-b",
+   "category": "Apex系列",
+   "maxContext": 16000,
+   "price": 0.0004,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "情绪反应快，互动感强，适合高代入角色扮演"
+  },
+  {
+   "internal": "x-apex-surge-0923-b",
+   "display": "Surge-0923-b (32K)",
+   "family": "apex",
+   "series": "Surge-0923-b",
+   "category": "Apex系列",
+   "maxContext": 32000,
+   "price": 0.0004,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "情绪反应快，互动感强，适合高代入角色扮演"
+  },
+  {
+   "internal": "x-apex-surge-0923-a-16k",
+   "display": "Surge-0923-a (16K)",
+   "family": "apex",
+   "series": "Surge-0923-a",
+   "category": "Apex系列",
+   "maxContext": 16000,
+   "price": 0.0004,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "情绪反应快，互动感强，适合高代入角色扮演"
+  },
+  {
+   "internal": "x-apex-surge-0923-a",
+   "display": "Surge-0923-a (32K)",
+   "family": "apex",
+   "series": "Surge-0923-a",
+   "category": "Apex系列",
+   "maxContext": 32000,
+   "price": 0.0004,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "情绪反应快，互动感强，适合高代入角色扮演"
+  },
+  {
+   "internal": "x-apex-surge-1018-16k",
+   "display": "Surge-1018 (16K)",
+   "family": "apex",
+   "series": "Surge-1018",
+   "category": "Apex系列",
+   "maxContext": 16000,
+   "price": 0.0004,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "情绪反应快，互动感强，适合高代入角色扮演"
+  },
+  {
+   "internal": "x-apex-surge-1018",
+   "display": "Surge-1018 (32K)",
+   "family": "apex",
+   "series": "Surge-1018",
+   "category": "Apex系列",
+   "maxContext": 32000,
+   "price": 0.0004,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "情绪反应快，互动感强，适合高代入角色扮演"
+  },
+  {
+   "internal": "x-apex-dash-0826-16k",
+   "display": "Dash-0826 (16K)",
+   "family": "apex",
+   "series": "Dash-0826",
+   "category": "Apex系列",
+   "maxContext": 16000,
+   "price": 0.0001,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": true,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "响应更快、积分消耗更低，适合长对话高频互动"
+  },
+  {
+   "internal": "x-apex-dash-0826",
+   "display": "Dash-0826 (32K)",
+   "family": "apex",
+   "series": "Dash-0826",
+   "category": "Apex系列",
+   "maxContext": 32000,
+   "price": 0.0001,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": true,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "响应更快、积分消耗更低，适合长对话高频互动"
+  },
+  {
+   "internal": "x-apex-dash-0826-64k",
+   "display": "Dash-0826 (64K)",
+   "family": "apex",
+   "series": "Dash-0826",
+   "category": "Apex系列",
+   "maxContext": 64000,
+   "price": 0.0001,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": true,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "响应更快、积分消耗更低，适合长对话高频互动"
+  },
+  {
+   "internal": "x-apex-dash-0826-128k",
+   "display": "Dash-0826 (128K)",
+   "family": "apex",
+   "series": "Dash-0826",
+   "category": "Apex系列",
+   "maxContext": 128000,
+   "price": 0.0001,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": true,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "响应更快、积分消耗更低，适合长对话高频互动"
+  },
+  {
+   "internal": "x-apex-pulse-0731-16k",
+   "display": "Pulse-0731 (16K)",
+   "family": "apex",
+   "series": "Pulse-0731",
+   "category": "Apex系列",
+   "maxContext": 16000,
+   "price": 0.0002,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "兼顾响应速度与细节表现，适合长对话和高频剧情互动"
+  },
+  {
+   "internal": "x-apex-pulse-0731",
+   "display": "Pulse-0731 (32K)",
+   "family": "apex",
+   "series": "Pulse-0731",
+   "category": "Apex系列",
+   "maxContext": 32000,
+   "price": 0.0002,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "兼顾响应速度与细节表现，适合长对话和高频剧情互动"
+  },
+  {
+   "internal": "x-apex-pulse-0731-64k",
+   "display": "Pulse-0731 (64K)",
+   "family": "apex",
+   "series": "Pulse-0731",
+   "category": "Apex系列",
+   "maxContext": 64000,
+   "price": 0.0002,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "兼顾响应速度与细节表现，适合长对话和高频剧情互动"
+  },
+  {
+   "internal": "x-apex-pulse-0731-128k",
+   "display": "Pulse-0731 (128K)",
+   "family": "apex",
+   "series": "Pulse-0731",
+   "category": "Apex系列",
+   "maxContext": 128000,
+   "price": 0.0002,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "兼顾响应速度与细节表现，适合长对话和高频剧情互动"
+  },
+  {
+   "internal": "x-apex-dash-0727-16k",
+   "display": "Dash-0727 (16K)",
+   "family": "apex",
+   "series": "Dash-0727",
+   "category": "Apex系列",
+   "maxContext": 16000,
+   "price": 0.0001,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "响应更快、积分消耗更低，适合长对话高频互动"
+  },
+  {
+   "internal": "x-apex-dash-0727",
+   "display": "Dash-0727 (32K)",
+   "family": "apex",
+   "series": "Dash-0727",
+   "category": "Apex系列",
+   "maxContext": 32000,
+   "price": 0.0001,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "响应更快、积分消耗更低，适合长对话高频互动"
+  },
+  {
+   "internal": "x-apex-dash-0727-64k",
+   "display": "Dash-0727 (64K)",
+   "family": "apex",
+   "series": "Dash-0727",
+   "category": "Apex系列",
+   "maxContext": 64000,
+   "price": 0.0001,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "响应更快、积分消耗更低，适合长对话高频互动"
+  },
+  {
+   "internal": "x-apex-dash-0727-128k",
+   "display": "Dash-0727 (128K)",
+   "family": "apex",
+   "series": "Dash-0727",
+   "category": "Apex系列",
+   "maxContext": 128000,
+   "price": 0.0001,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "响应更快、积分消耗更低，适合长对话高频互动"
+  },
+  {
+   "internal": "x-apex-vega-1014-16k",
+   "display": "Vega-1014 (16K)",
+   "family": "apex",
+   "series": "Vega-1014",
+   "category": "Apex系列",
+   "maxContext": 16000,
+   "price": 0.0005,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": true,
+   "minMembershipLevel": 3,
+   "listedInApi": false,
+   "description": "内测档位，仅对受邀账号开放"
+  },
+  {
+   "internal": "x-apex-vega-1014",
+   "display": "Vega-1014 (32K)",
+   "family": "apex",
+   "series": "Vega-1014",
+   "category": "Apex系列",
+   "maxContext": 32000,
+   "price": 0.0005,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": true,
+   "minMembershipLevel": 3,
+   "listedInApi": false,
+   "description": "内测档位，仅对受邀账号开放"
+  },
+  {
+   "internal": "x-apex-vega-1014-64k",
+   "display": "Vega-1014 (64K)",
+   "family": "apex",
+   "series": "Vega-1014",
+   "category": "Apex系列",
+   "maxContext": 64000,
+   "price": 0.0005,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": true,
+   "minMembershipLevel": 3,
+   "listedInApi": false,
+   "description": "内测档位，仅对受邀账号开放"
+  },
+  {
+   "internal": "x-apex-sigma-0829-16k",
+   "display": "Sigma-0829 (16K)",
+   "family": "apex",
+   "series": "Sigma-0829",
+   "category": "Apex系列",
+   "maxContext": 16000,
+   "price": 0.0005,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": true,
+   "minMembershipLevel": 3,
+   "listedInApi": true,
+   "description": "长线剧情旗舰，结构清楚，适合复杂设定和大篇幅展开"
+  },
+  {
+   "internal": "x-apex-sigma-0829",
+   "display": "Sigma-0829 (32K)",
+   "family": "apex",
+   "series": "Sigma-0829",
+   "category": "Apex系列",
+   "maxContext": 32000,
+   "price": 0.0005,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": true,
+   "minMembershipLevel": 3,
+   "listedInApi": true,
+   "description": "长线剧情旗舰，结构清楚，适合复杂设定和大篇幅展开"
+  },
+  {
+   "internal": "x-apex-sigma-0829-64k",
+   "display": "Sigma-0829 (64K)",
+   "family": "apex",
+   "series": "Sigma-0829",
+   "category": "Apex系列",
+   "maxContext": 64000,
+   "price": 0.0005,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": true,
+   "minMembershipLevel": 3,
+   "listedInApi": true,
+   "description": "长线剧情旗舰，结构清楚，适合复杂设定和大篇幅展开"
+  },
+  {
+   "internal": "x-apex-flux-0217-10k",
+   "display": "Flux-0217 (10K)",
+   "family": "apex",
+   "series": "Flux-0217",
+   "category": "Apex系列",
+   "maxContext": 10000,
+   "price": 0.0002,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "画面感强，场景推进快，适合沉浸式剧情互动"
+  },
+  {
+   "internal": "x-apex-flux-0217-16k",
+   "display": "Flux-0217 (16K)",
+   "family": "apex",
+   "series": "Flux-0217",
+   "category": "Apex系列",
+   "maxContext": 16000,
+   "price": 0.0002,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "画面感强，场景推进快，适合沉浸式剧情互动"
+  },
+  {
+   "internal": "x-apex-flux-0217",
+   "display": "Flux-0217 (32K)",
+   "family": "apex",
+   "series": "Flux-0217",
+   "category": "Apex系列",
+   "maxContext": 32000,
+   "price": 0.0002,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "画面感强，场景推进快，适合沉浸式剧情互动"
+  },
+  {
+   "internal": "x-apex-sigma-0621-16k",
+   "display": "Sigma-0621 (16K)",
+   "family": "apex",
+   "series": "Sigma-0621",
+   "category": "Apex系列",
+   "maxContext": 16000,
+   "price": 0.0005,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 3,
+   "listedInApi": true,
+   "description": "长线剧情旗舰，结构清楚，适合复杂设定和大篇幅展开"
+  },
+  {
+   "internal": "x-apex-sigma-0621",
+   "display": "Sigma-0621 (32K)",
+   "family": "apex",
+   "series": "Sigma-0621",
+   "category": "Apex系列",
+   "maxContext": 32000,
+   "price": 0.0005,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 3,
+   "listedInApi": true,
+   "description": "长线剧情旗舰，结构清楚，适合复杂设定和大篇幅展开"
+  },
+  {
+   "internal": "x-apex-sigma-0621-64k",
+   "display": "Sigma-0621 (64K)",
+   "family": "apex",
+   "series": "Sigma-0621",
+   "category": "Apex系列",
+   "maxContext": 64000,
+   "price": 0.0005,
+   "isApex": true,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 3,
+   "listedInApi": true,
+   "description": "长线剧情旗舰，结构清楚，适合复杂设定和大篇幅展开"
+  },
+  {
+   "internal": "x-apex-prism-0408-16k",
+   "display": "Prism-0626 (16K)",
+   "family": "apex",
+   "series": "Prism-0626",
+   "category": "Apex系列",
+   "maxContext": 16000,
+   "price": 0.0003,
+   "isApex": true,
+   "thinking": false,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "高密度沉浸派，刺激直给，适合强场景"
+  },
+  {
+   "internal": "x-apex-prism-0408",
+   "display": "Prism-0626 (32K)",
+   "family": "apex",
+   "series": "Prism-0626",
+   "category": "Apex系列",
+   "maxContext": 32000,
+   "price": 0.0003,
+   "isApex": true,
+   "thinking": false,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "高密度沉浸派，刺激直给，适合强场景"
+  },
+  {
+   "internal": "nalang-max-0826-10k",
+   "display": "Max-0826 (10K)",
+   "family": "nalang",
+   "series": "Max-0826",
+   "category": "Max系列",
+   "maxContext": 10000,
+   "price": 0.0004,
+   "isApex": false,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "旗舰稳定款，叙事顺滑，承接直接，适合高质量长聊"
+  },
+  {
+   "internal": "nalang-max-0826-16k",
+   "display": "Max-0826 (16K)",
+   "family": "nalang",
+   "series": "Max-0826",
+   "category": "Max系列",
+   "maxContext": 16000,
+   "price": 0.0004,
+   "isApex": false,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "旗舰稳定款，叙事顺滑，承接直接，适合高质量长聊"
+  },
+  {
+   "internal": "nalang-max-0826",
+   "display": "Max-0826 (32K)",
+   "family": "nalang",
+   "series": "Max-0826",
+   "category": "Max系列",
+   "maxContext": 32000,
+   "price": 0.0004,
+   "isApex": false,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "旗舰稳定款，叙事顺滑，承接直接，适合高质量长聊"
+  },
+  {
+   "internal": "nalang-turbo-0826-10k",
+   "display": "Turbo-0826 (10K)",
+   "family": "nalang",
+   "series": "Turbo-0826",
+   "category": "Turbo系列",
+   "maxContext": 10000,
+   "price": 0.0001,
+   "isApex": false,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "旧版低消耗模型，适合基础聊天"
+  },
+  {
+   "internal": "nalang-turbo-0826-16k",
+   "display": "Turbo-0826 (16K)",
+   "family": "nalang",
+   "series": "Turbo-0826",
+   "category": "Turbo系列",
+   "maxContext": 16000,
+   "price": 0.0001,
+   "isApex": false,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "旧版低消耗模型，适合基础聊天"
+  },
+  {
+   "internal": "nalang-turbo-0826",
+   "display": "Turbo-0826 (32K)",
+   "family": "nalang",
+   "series": "Turbo-0826",
+   "category": "Turbo系列",
+   "maxContext": 32000,
+   "price": 0.0001,
+   "isApex": false,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "旧版低消耗模型，适合基础聊天"
+  },
+  {
+   "internal": "nalang-turbo-1115-10k",
+   "display": "Turbo-0101 (10K)",
+   "family": "nalang",
+   "series": "Turbo-0101",
+   "category": "Turbo系列",
+   "maxContext": 10000,
+   "price": 0.0001,
+   "isApex": false,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "低消耗均衡款，适合轻量日常聊天"
+  },
+  {
+   "internal": "nalang-turbo-1115-16k",
+   "display": "Turbo-0101 (16K)",
+   "family": "nalang",
+   "series": "Turbo-0101",
+   "category": "Turbo系列",
+   "maxContext": 16000,
+   "price": 0.0001,
+   "isApex": false,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "低消耗均衡款，适合轻量日常聊天"
+  },
+  {
+   "internal": "nalang-turbo-1115",
+   "display": "Turbo-0101 (32K)",
+   "family": "nalang",
+   "series": "Turbo-0101",
+   "category": "Turbo系列",
+   "maxContext": 32000,
+   "price": 0.0001,
+   "isApex": false,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "低消耗均衡款，适合轻量日常聊天"
+  },
+  {
+   "internal": "nalang-medium-0826-10k",
+   "display": "Medium-0826 (10K)",
+   "family": "nalang",
+   "series": "Medium-0826",
+   "category": "Medium系列",
+   "maxContext": 10000,
+   "price": 0.0002,
+   "isApex": false,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "轻量耐用，互动自然，适合日常陪伴和中低消耗长聊"
+  },
+  {
+   "internal": "nalang-medium-0826-16k",
+   "display": "Medium-0826 (16K)",
+   "family": "nalang",
+   "series": "Medium-0826",
+   "category": "Medium系列",
+   "maxContext": 16000,
+   "price": 0.0002,
+   "isApex": false,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "轻量耐用，互动自然，适合日常陪伴和中低消耗长聊"
+  },
+  {
+   "internal": "nalang-medium-0826",
+   "display": "Medium-0826 (32K)",
+   "family": "nalang",
+   "series": "Medium-0826",
+   "category": "Medium系列",
+   "maxContext": 32000,
+   "price": 0.0002,
+   "isApex": false,
+   "thinking": true,
+   "strictModeration": false,
+   "minMembershipLevel": 0,
+   "listedInApi": true,
+   "description": "轻量耐用，互动自然，适合日常陪伴和中低消耗长聊"
+  }
+ ]
+}

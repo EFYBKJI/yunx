@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SecBox</title>
+<style>
+  :root{
+    --bg:#0d0f14; --card:#151821; --line:#252a36; --fg:#e8e9ee; --mut:#8b8fa3;
+    --acc:#6d4bff; --acc2:#3b82f6; --ok:#4ade80; --warn:#fbbf24; --err:#ff8b8b;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;padding:16px 14px 28px;background:var(--bg);color:var(--fg);
+       font:15px/1.55 -apple-system,'PingFang SC','Microsoft YaHei',sans-serif}
+  h1{font-size:19px;margin:4px 0 2px}
+  .sub{color:var(--mut);font-size:12px;margin-bottom:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}
+  .card h2{font-size:13px;margin:0 0 8px;color:var(--mut);font-weight:500;letter-spacing:.4px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  button{border:1px solid var(--line);background:#1b1f2b;color:var(--fg);border-radius:11px;
+         padding:11px 10px;font-size:13px;text-align:left;line-height:1.35}
+  button:active{transform:scale(.985)}
+  button b{display:block;font-size:14px;margin-bottom:2px}
+  button span{color:var(--mut);font-size:11px}
+  button.primary{background:linear-gradient(135deg,var(--acc),var(--acc2));border-color:transparent}
+  .row{display:flex;gap:8px}
+  input{flex:1;min-width:0;background:#1b1f2b;border:1px solid var(--line);color:var(--fg);
+        border-radius:10px;padding:10px;font-size:13px;outline:none}
+  .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;background:#1f2432;color:var(--mut)}
+  .ok{color:var(--ok)} .warn{color:var(--warn)} .err{color:var(--err)}
+  .note{font-size:11px;color:var(--mut);line-height:1.7;margin-top:8px}
+  .warnbox{border-color:#4a3f22;background:#211c10;color:#ffe08a}
+  code{background:#1e2029;padding:1px 5px;border-radius:4px;font-size:12px}
+</style>
+</head>
+<body>
+
+<h1>SecBox</h1>
+<div class="sub">手机端安全工具箱 · 控制台</div>
+
+<div class="card">
+  <h2>环境</h2>
+  <div>Termux：<span id="termux-state" class="pill">检测中…</span></div>
+  <div class="note">Termux 需装 <code>Termux:Tasker</code>，并在 <code>~/.termux/termux.properties</code> 里设
+    <code>allow-external-apps=true</code>，再把 <code>secbox</code> 放进 <code>$PREFIX/bin</code>。</div>
+</div>
+
+<div class="card">
+  <h2>工具（点一下直接跑）</h2>
+  <div class="grid">
+    <button onclick="run('terminal')"><b>终端</b><span>交互 shell</span></button>
+    <button onclick="run('capture')"><b>抓包</b><span>mitmproxy 8080</span></button>
+    <button onclick="run('reverse')"><b>逆向</b><span>选 APK 解包</span></button>
+    <button onclick="run('recon')"><b>侦察</b><span>nmap（需授权）</span></button>
+    <button onclick="run('lab')"><b>靶场</b><span>Juice Shop</span></button>
+    <button onclick="run('doctor')"><b>自检</b><span>看缺什么</span></button>
+  </div>
+</div>
+
+<div class="card">
+  <h2>内置浏览器</h2>
+  <div class="row">
+    <input id="url" value="https://www.dzmm.ai/" placeholder="https://…" autocomplete="off">
+    <button class="primary" style="width:76px;text-align:center" onclick="go()">打开</button>
+  </div>
+  <div class="row" style="margin-top:8px">
+    <button style="flex:1" onclick="ext()"><b>用外部浏览器</b><span>可装扩展 / 油猴</span></button>
+    <button style="flex:1" onclick="devtools()"><b>调试说明</b><span>chrome://inspect</span></button>
+  </div>
+  <div class="note">本 App 的 WebView <b>不支持 Chrome 扩展</b>；要装插件请用狐猴 / Titanium 等 Chromium 分支。
+  本 App 的价值是：内置页面 + 一键调起工具 + 可远程调试。</div>
+</div>
+
+<div class="card warnbox">
+  <h2 style="color:#ffe08a">授权边界</h2>
+  <div class="note" style="color:#ffe08a;margin:0">
+    只对<b>你自己的资产</b>或<b>本地靶场</b>使用。所有"针对目标"的操作都会先要求确认授权；
+    未授权扫描或攻击他人系统，在国内属违法（《网络安全法》27 条、《刑法》285/286 条）。
+  </div>
+</div>
+
+<div class="card">
+  <h2>关于</h2>
+  <div class="note" style="margin:0">
+    工具全部来自公开源（Termux 包管理器 / GitHub Release），本 App 不内置任何二进制。
+    版本 1.0 · 控制台页面本地加载，不联网。
+  </div>
+</div>
+
+<script>
+  var SECBOX = '/data/data/com.termux/files/usr/bin/secbox';
+
+  function hasBridge() {
+    return typeof SecBox !== 'undefined';
+  }
+
+  function run(cmd) {
+    if (!hasBridge()) { alert('需要在 App 内打开'); return; }
+    SecBox.runTermux(SECBOX, cmd);
+  }
+
+  function go() {
+    var u = document.getElementById('url').value.trim();
+    if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
+    if (hasBridge()) SecBox.openUrl(u); else location.href = u;
+  }
+
+  function ext() {
+    var u = document.getElementById('url').value.trim();
+    if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
+    if (hasBridge()) SecBox.openExternal(u); else location.href = u;
+  }
+
+  function devtools() {
+    if (hasBridge()) {
+      SecBox.toast('手机连电脑，Chrome 打开 chrome://inspect，选本 App 的 WebView');
+    } else {
+      alert('手机连电脑 → Chrome 打开 chrome://inspect（需 USB 调试）');
+    }
+  }
+
+  (function init() {
+    var el = document.getElementById('termux-state');
+    if (!hasBridge()) { el.textContent = '未知（非 App 环境）'; return; }
+    var ok = SecBox.termuxInstalled() === '1';
+    el.textContent = ok ? '已安装' : '未安装';
+    el.className = 'pill ' + (ok ? 'ok' : 'err');
+  })();
+</script>
+</body>
+</html>

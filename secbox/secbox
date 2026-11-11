@@ -1,0 +1,230 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# SecBox —— 手机端安全工具箱（Termux 版，一菜单启动）
+#
+# 定位：学习与自带靶场用。所有"针对目标"的功能都会先要求你确认授权。
+# 安装：bash install.sh   然后终端输入 secbox
+set -u
+
+PREFIX_BIN="${PREFIX:-/data/data/com.termux/files/usr}/bin"
+WORKDIR="${HOME:-/data/data/com.termux/files/home}/secbox-work"
+mkdir -p "$WORKDIR"
+
+C_INFO=$'\033[36m'; C_OK=$'\033[32m'; C_WARN=$'\033[33m'; C_ERR=$'\033[31m'; C_END=$'\033[0m'
+say()  { printf '%s\n' "$*"; }
+ok()   { printf '%s✔%s %s\n' "$C_OK" "$C_END" "$*"; }
+warn() { printf '%s!%s %s\n' "$C_WARN" "$C_END" "$*"; }
+err()  { printf '%s✘%s %s\n' "$C_ERR" "$C_END" "$*"; }
+hr()   { printf '%s\n' "────────────────────────────────────────────"; }
+
+have() { command -v "$1" >/dev/null 2>&1; }
+
+# ---------------------------------------------------------------- 授权门
+# 私有地址 / 本机 / .local / .test → 直接放行；其它必须显式确认授权。
+require_authorization() {
+    local target="$1"
+    case "$target" in
+        localhost|127.*|10.*|192.168.*|172.1[6-9].*|172.2[0-9].*|172.3[01].*|*.local|*.test|*.lan)
+            ok "目标是私有/本机地址，按靶场处理"
+            return 0 ;;
+    esac
+    hr
+    warn "目标 $target 不是本机或私有网段。"
+    warn "只有在你拥有它、或拿到书面授权时才可以继续。"
+    say  "未授权扫描/攻击在中国属于违法行为（《网络安全法》27 条、《刑法》285/286 条）。"
+    hr
+    printf '如确认已获授权，输入大写 %sAUTHORIZED%s 继续，其它任意键返回：' "$C_WARN" "$C_END"
+    read -r answer
+    [ "$answer" = "AUTHORIZED" ] && { ok "已确认授权：$target"; return 0; }
+    err "已取消"
+    return 1
+}
+
+# ---------------------------------------------------------------- 1 终端
+do_terminal() {
+    hr; say "进入交互 shell（exit 返回菜单）"; hr
+    "${SHELL:-/system/bin/sh}" -i || true
+}
+
+# ---------------------------------------------------------------- 2 抓包
+do_capture() {
+    hr; say "抓包：mitmproxy（HTTP/HTTPS 代理）"; hr
+    if ! have mitmproxy; then
+        err "未安装 mitmproxy"
+        say "安装：pkg install mitmproxy"
+        return 1
+    fi
+    local port="${1:-8080}"
+    say "代理地址：127.0.0.1:$port（手机 Wi-Fi 代理填本机 IP）"
+    say "证书下载：浏览器打开 http://mitm.it 安装为「用户证书」"
+    say "手机设置 → 安全 → 加密与凭据 → 安装证书 → CA 证书"
+    warn "只抓你自己的流量；抓别人设备/网络需另行授权。"
+    hr
+    say "启动中… Ctrl+C 结束"
+    mitmproxy --listen-port "$port" --set confdir="$WORKDIR/mitm"
+}
+
+# ---------------------------------------------------------------- 3 逆向
+pick_apk() {
+    local dirs=("/sdcard/Download" "/sdcard" "$HOME")
+    local files=()
+    for d in "${dirs[@]}"; do
+        [ -d "$d" ] || continue
+        while IFS= read -r f; do files+=("$f"); done < <(find "$d" -maxdepth 1 -name '*.apk' -type f 2>/dev/null | head -20)
+    done
+    if [ ${#files[@]} -eq 0 ]; then
+        printf '没找到 APK。手动输入路径：'; read -r manual
+        [ -f "$manual" ] && printf '%s\n' "$manual"
+        return
+    fi
+    say "选择要分析的 APK："
+    local i=1
+    for f in "${files[@]}"; do
+        printf '  %2d) %s\n' "$i" "$(basename "$f")"
+        i=$((i+1))
+    done
+    printf '输入序号（默认 1）：'; read -r idx
+    idx="${idx:-1}"
+    if [ "$idx" -ge 1 ] 2>/dev/null && [ "$idx" -le ${#files[@]} ]; then
+        printf '%s\n' "${files[$((idx-1))]}"
+    fi
+}
+
+do_reverse() {
+    hr; say "APK 逆向：解包 + 反编译（apktool / jadx）"; hr
+    if ! have apktool && ! have jadx; then
+        err "至少装一个：pkg install apktool  （jadx 从 GitHub Release 下）"
+        return 1
+    fi
+    local apk; apk="$(pick_apk)"
+    [ -n "${apk:-}" ] || { err "没选文件"; return 1; }
+
+    local name out
+    name="$(basename "$apk" .apk)"
+    out="$WORKDIR/reverse/$name-$(date +%Y%m%d-%H%M%S)"
+    mkdir -p "$out"
+
+    if have apktool; then
+        say "[1/2] apktool 解包 → $out/apktool"
+        apktool d -f "$apk" -o "$out/apktool" >/dev/null 2>&1 && ok "资源与 smali 已解出" || warn "apktool 失败（可能是加固包）"
+    fi
+    if have jadx; then
+        say "[2/2] jadx 反编译 Java → $out/jadx"
+        jadx -d "$out/jadx" --no-res "$apk" >/dev/null 2>&1 && ok "Java 源码已反编译" || warn "jadx 失败"
+    fi
+
+    hr
+    ok "输出目录：$out"
+    say "常用命令："
+    say "  查权限      grep -h 'uses-permission' $out/apktool/AndroidManifest.xml"
+    say "  搜 URL      grep -rEo 'https?://[^\"'\\'' ]+' $out/jadx | sort -u | head"
+    say "  搜密钥      grep -rEi '(api[_-]?key|secret|token|password)' $out/jadx | head -20"
+    say "  找加固      ls $out/apktool/lib/*/ | head   # 多个 lib*.so 常见于壳"
+    say "  重新打包    apktool b $out/apktool -o ${name}-repack.apk"
+}
+
+# ---------------------------------------------------------------- 4 侦察
+do_recon() {
+    hr; say "侦察（nmap + 可选 httpx）"; hr
+    printf '目标（域名/IP/网段）：'; read -r target
+    [ -n "${target:-}" ] || { err "没输入目标"; return 1; }
+    require_authorization "$target" || return 1
+
+    if have nmap; then
+        say "nmap -sV -T3 --top-ports 200 $target"
+        hr
+        nmap -sV -T3 --top-ports 200 "$target" 2>&1 | tee "$WORKDIR/recon-$(date +%s).txt"
+    else
+        err "未安装 nmap：pkg install nmap"
+    fi
+    if have httpx; then
+        say; say "httpx 探测："
+        printf '%s\n' "$target" | httpx -silent -title -tech-detect -status-code 2>/dev/null | head -20
+    fi
+}
+
+# ---------------------------------------------------------------- 5 靶场
+do_lab() {
+    hr; say "本地靶场（随便打，不违法）"; hr
+    say "1) OWASP Juice Shop（Node）"
+    say "2) DVWA（需 docker）"
+    say "3) 返回"
+    printf '选择：'; read -r c
+    case "$c" in
+        1)
+            if have node; then
+                say "http://127.0.0.1:3000  （账号 admin@juice-sh.op / admin123）"
+                npx -y juice-shop
+            else
+                err "先装 node：pkg install nodejs"
+            fi ;;
+        2)
+            if have docker; then
+                docker run --rm -p 8080:80 vulnerables/web-dvwa
+            else
+                warn "手机上没有 docker，建议在 PC 上起："
+                say "docker run --rm -p 8080:80 vulnerables/web-dvwa"
+            fi ;;
+        *) return 0 ;;
+    esac
+}
+
+# ---------------------------------------------------------------- 6 环境自检
+do_doctor() {
+    hr; say "环境自检"; hr
+    local tools=(nmap sqlmap nikto hydra ffuf nuclei mitmproxy tcpdump apktool jadx frida python node git)
+    for t in "${tools[@]}"; do
+        if have "$t"; then ok "$t"; else printf '%s–%s %-12s 未安装\n' "$C_WARN" "$C_END" "$t"; fi
+    done
+    hr
+    say "安装缺失项：bash $PREFIX_BIN/../share/secbox/install.sh" 2>/dev/null || true
+    say "工作目录：$WORKDIR"
+    df -h "$WORKDIR" 2>/dev/null | tail -1
+}
+
+# ---------------------------------------------------------------- 菜单
+menu() {
+    clear 2>/dev/null || true
+    printf '\n%s╔══════════════════════════════════════════╗%s\n' "$C_INFO" "$C_END"
+    printf '%s║%s  SecBox · 手机安全工具箱                 %s║%s\n' "$C_INFO" "$C_END" "$C_INFO" "$C_END"
+    printf '%s╚══════════════════════════════════════════╝%s\n' "$C_INFO" "$C_END"
+    say "  1) 终端（交互 shell）"
+    say "  2) 抓包（mitmproxy + 证书指引）"
+    say "  3) 逆向（选 APK → 解包 / 反编译）"
+    say "  4) 侦察（nmap / httpx，需授权）"
+    say "  5) 本地靶场（Juice Shop / DVWA）"
+    say "  6) 环境自检"
+    say "  0) 退出"
+    printf '\n选择：'
+}
+
+main() {
+    if [ $# -gt 0 ]; then
+        case "$1" in
+            terminal) do_terminal ;;
+            capture)  shift; do_capture "${1:-8080}" ;;
+            reverse)  do_reverse ;;
+            recon)    do_recon ;;
+            lab)      do_lab ;;
+            doctor)   do_doctor ;;
+            *)        err "未知命令：$1"; exit 1 ;;
+        esac
+        exit 0
+    fi
+    while true; do
+        menu
+        read -r choice
+        case "$choice" in
+            1) do_terminal ;;
+            2) do_capture ;;
+            3) do_reverse ;;
+            4) do_recon ;;
+            5) do_lab ;;
+            6) do_doctor ;;
+            0|q) say "再见"; exit 0 ;;
+            *) warn "无效选择" ;;
+        esac
+        printf '\n按回车返回菜单…'; read -r _
+    done
+}
+
+main "$@"
