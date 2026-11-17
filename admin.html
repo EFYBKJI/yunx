@@ -65,6 +65,11 @@ button{border:0;background:none;cursor:pointer;padding:0}
 .btn.sm{padding:9px 14px;font-size:13.5px;border-radius:11px}
 .btn.danger{color:var(--bad);border-color:rgba(251,113,133,.3);background:rgba(251,113,133,.08)}
 .btn.good{color:var(--ok);border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.08)}
+.login-state{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:14px;padding:12px;border-radius:12px;background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.25);font-size:13.5px;color:#2563eb;font-weight:600}
+.login-state.ok{background:rgba(22,163,74,.1);border-color:rgba(22,163,74,.3);color:#16a34a}
+.login-state.bad{background:rgba(220,38,38,.1);border-color:rgba(220,38,38,.3);color:#dc2626}
+.spinner{width:14px;height:14px;border:2px solid rgba(37,99,235,.25);border-top-color:#2563eb;border-radius:50%;animation:spin .7s linear infinite;flex:0 0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
 .err{color:var(--bad);font-size:13px;min-height:20px;margin:2px 0 10px;white-space:pre-wrap}
 
 header{
@@ -313,6 +318,10 @@ header{
     </div>
     <div class="err" id="err"></div>
     <button class="btn pri block" id="doLogin">连接后台</button>
+    <div id="loginState" class="login-state hidden">
+      <span class="spinner"></span>
+      <span id="loginStateText">正在连接服务器…</span>
+    </div>
     <p style="color:var(--tx3);font-size:11.5px;margin:16px 2px 0;line-height:1.7">
       密码只保存在本机浏览器，不会上传到任何第三方。<br>后台本身不含卡密数据，密码错了看不到任何东西。
     </p>
@@ -583,22 +592,105 @@ header{
     if(view==="device" && currentDevice) loadDeviceDetail(currentDevice);
   }
 
+  var logging = false;
+
+  function setState(kind, msg){
+    var box = $("loginState"), txt = $("loginStateText");
+    if(!box || !txt) return;
+    box.classList.remove("hidden","ok","bad");
+    if(kind) box.classList.add(kind);
+    txt.textContent = msg || "";
+  }
+  function hideState(){
+    var box = $("loginState");
+    if(box) box.classList.add("hidden");
+  }
+
   function login(){
-    api=$("api").value.trim(); token=$("token").value.trim();
-    var e=$("err"); e.textContent="";
-    if(!api){e.textContent="请填服务地址";return}
-    if(!token){e.textContent="请填管理密码";return}
-    if(!/^https?:\/\//.test(api)) api="http://"+api;
+    if(logging) return;
+    var e=$("err");
+    e.textContent="";
+
+    api=$("api").value.trim();
+    token=$("token").value.trim();
+
+    if(!api){ e.textContent="请填写服务地址"; return; }
+    if(!token){ e.textContent="请填写管理密码"; return; }
+    if(!/^https?:\/\//i.test(api)) api="https://"+api;
+    api = api.replace(/\/+$/,"");
+
+    logging = true;
+    var btn = $("doLogin");
+    btn.disabled = true;
+    btn.textContent = "连接中…";
+    setState("", "正在连接 " + api + " …");
+
+    // 12 秒超时保护
+    var done = false;
+    var timer = setTimeout(function(){
+      if(done) return;
+      done = true;
+      logging = false;
+      btn.disabled = false;
+      btn.textContent = "连接后台";
+      setState("bad", "超时：服务器 12 秒无响应");
+      e.textContent = "连接超时，请检查服务地址是否可从外网访问";
+    }, 12000);
+
+    function finish(pass, msg){
+      if(done) return;
+      done = true;
+      clearTimeout(timer);
+      logging = false;
+      btn.disabled = false;
+      btn.textContent = "连接后台";
+
+      if(!pass){
+        setState("bad", msg);
+        e.textContent = msg;
+        return;
+      }
+      setState("ok", "登录成功，正在进入…");
+      setTimeout(function(){
+        $("login").classList.add("hidden");
+        $("app").classList.remove("hidden");
+        hideState();
+        try{
+          buildApps(); buildChips(); refreshAll();
+        }catch(ex){
+          e.textContent = "界面初始化失败：" + ex.message;
+        }
+      }, 350);
+    }
 
     call("/admin/apps").then(function(res){
-      if(!res||!res.ok){ e.textContent=(res&&res.msg)||"连接失败"; return; }
-      apps=res.data.apps;
-      try{localStorage.setItem(LS_API,api);localStorage.setItem(LS_TOK,token)}catch(x){}
-      $("login").classList.add("hidden");
-      $("app").classList.remove("hidden");
-      buildApps(); buildChips(); refreshAll();
+      if(!res){ finish(false, "服务器无返回内容"); return; }
+      if(!res.ok){
+        var m = res.msg || res.message || "";
+        if(res.code===401 || /token|auth|密码|unauthor/i.test(m)){
+          finish(false, "密码错误或已失效");
+        }else{
+          finish(false, "登录被拒绝：" + (m || ("状态码 " + (res.code||"未知"))));
+        }
+        return;
+      }
+      if(!res.data || !res.data.apps){
+        finish(false, "返回格式不对，不是这个后台服务");
+        return;
+      }
+      apps = res.data.apps || {};
+      try{
+        localStorage.setItem(LS_API, api);
+        localStorage.setItem(LS_TOK, token);
+      }catch(x){}
+      finish(true);
     }).catch(function(err){
-      e.textContent="连不上服务："+err.message+"\n检查地址能否打开、是否需 https";
+      var m = String(err && err.message || err);
+      if(/Failed to fetch|NetworkError|load failed/i.test(m)){
+        finish(false, "连不上服务器（网络/CORS/地址错误）");
+      }else{
+        finish(false, "连接异常：" + m);
+      }
     });
   }
   $("doLogin").addEventListener("click",login);
@@ -1261,12 +1353,23 @@ header{
 
   // 初始化
   (function(){
-    var a=null,t=null;
-    try{a=localStorage.getItem(LS_API);t=localStorage.getItem(LS_TOK)}catch(e){}
-    if(a&&t){ $("api").value=a; $("token").value=t; login(); }
-    else{
-      $("api").value="https://api.yunxapp.dpdns.org";
-    }
+    // 强制从登录页开始，绝不自动登录（避免上次凭据导致卡死）
+    $("login").classList.remove("hidden");
+    $("app").classList.add("hidden");
+    var tr=$("trojanApp"), dv=$("devApp");
+    if(tr) tr.classList.add("hidden");
+    if(dv) dv.classList.add("hidden");
+    hideState();
+
+    var a=null, t=null;
+    try{
+      a=localStorage.getItem(LS_API);
+      t=localStorage.getItem(LS_TOK);
+    }catch(e){}
+
+    // 只回填地址和密码，不自动提交
+    $("api").value = a || "https://api.yunxapp.dpdns.org";
+    if(t) $("token").value = t;
     setN(5);
 
     // 绑定 tab 切换
